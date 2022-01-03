@@ -60,7 +60,7 @@ func bezier_arcLengths(start: CGPoint, p1: CGPoint, p2: CGPoint, finish: CGPoint
   var oy:CGFloat = _bezier_point_y (t: 0, a: start, b: p1, c: p2, d: finish);
   
   var arcLengths: [CGFloat] = []
-  arcLengths.append(0)
+  //arcLengths.append(0)
   for item in stride(from: by, to: 1, by: by) {
     let x = _bezier_point_x (t: item, a: start, b: p1, c: p2, d: finish)
     let y = _bezier_point_y (t: item, a: start, b: p1, c: p2, d: finish)

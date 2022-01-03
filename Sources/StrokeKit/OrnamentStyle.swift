@@ -65,7 +65,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
     
     innerContent(index)
       .view
-      .id(UUID())
+      //.id(UUID())
       .rotationEffect(angle)
       .offset(x: point.x/2, y: point.y/2)
       .position(x: point.x/2, y: point.y/2)
@@ -75,8 +75,6 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
   func buildAubViews(content: Content) -> [ViewItem] {
     
     var views: [ViewItem] = []
-    let innerContentWidth: CGFloat = 100
-    let size: CGSize = CGSize(width: 100, height: 100)
     
     traverser.traverse(callback: { element, data in
       switch element {
