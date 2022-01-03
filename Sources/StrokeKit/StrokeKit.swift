@@ -47,6 +47,7 @@ public extension Shape {
                           offsetPerItem: [CGPoint] = [],
                           spacing: [CGFloat] = [],
                           layout: Layout = .clockwise,
+                          rotateToPath: Bool = true,
                           accuracy: UInt = 100,
                           @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyle(shape: self,
@@ -56,6 +57,7 @@ public extension Shape {
                            offsetPerItem: offsetPerItem,
                            spacing: spacing,
                            layout: layout,
+                           rotateToPath: rotateToPath,
                            accuracy: accuracy))
   }
   
@@ -70,6 +72,7 @@ public extension Shape {
                                     offsetPerItem: [CGPoint] = [],
                                     spacing: [CGFloat] = [],
                                     layout: Layout = .clockwise,
+                                    rotateToPath: Bool = true,
                                     accuracy: UInt = 100,
                                     @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyleWithCanvas(shape: self,
@@ -79,6 +82,7 @@ public extension Shape {
                                      offsetPerItem: offsetPerItem,
                                      spacing: spacing,
                                      layout: layout,
+                                     rotateToPath: rotateToPath,
                                      accuracy: accuracy))
   }
   
@@ -86,6 +90,6 @@ public extension Shape {
 
 public enum Layout {
   case clockwise
-  case anti_clockwise
-  case both
+  //case anti_clockwise
+  //case both
 }

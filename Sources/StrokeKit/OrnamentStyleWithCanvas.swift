@@ -23,6 +23,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
               offsetPerItem: [CGPoint] = [],
               spacing: [CGFloat] = [],
               layout: Layout = .clockwise,
+              rotateToPath: Bool = true,
               accuracy: UInt = 100) {
     
     self.path = shape.path(in: CGRect.unit)

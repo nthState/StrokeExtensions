@@ -34,6 +34,7 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
   private var _startDistance: CGFloat = 0
   
   private var _items: [PathType] = []
+  //private var _uuids: [UUID] = []
   
   public init(shape: S,
               //@ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent,
@@ -80,6 +81,7 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
     var ctr: Int = 0
     for _ in stride(from: 0, to: self._totalLength, by: ornamentEvery) {
       _items.append(.shape)
+      //_uuids.append(UUID())
       accumulatingDistance += ornamentEvery
       _items.append(.spacer(distance: accumulatingDistance))
       if self.spacing.indices.contains(ctr) {
@@ -103,6 +105,7 @@ public extension PathTraversal {
     let newPoint: CGPoint
     let angle: Angle
     let index: Int
+    //let uuid: UUID
   }
   
   func traverse(callback: event) {

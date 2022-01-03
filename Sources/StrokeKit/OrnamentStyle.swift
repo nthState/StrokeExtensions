@@ -10,10 +10,10 @@ import CoreGraphics
 import simd
 
  struct ViewItem: Identifiable {
-  let id: UUID
+  let id: Int
   let view: AnyView
   
-  public init(id: UUID, view: AnyView) {
+  public init(id: Int, view: AnyView) {
     self.id = id
     self.view = view
   }
@@ -33,6 +33,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
               offsetPerItem: [CGPoint] = [],
               spacing: [CGFloat] = [],
               layout: Layout = .clockwise,
+              rotateToPath: Bool = true,
               accuracy: UInt = 100) {
     
     self.path = shape.path(in: CGRect.unit)
@@ -51,12 +52,13 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
   public func body(content: Content) -> some View {
     
     let items = buildAubViews(content: content)
-    
+
     ZStack {
       ForEach(items, id: \.id) { ornamentView in
         ornamentView
           .view
       }
+
     }
     
   }
@@ -82,15 +84,15 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
         break
       case .line(to: let point):
         let view = AnyView(drawView(content: UInt(data.index), at: data.newPoint, angle: data.angle))
-        views.append(ViewItem(id: UUID(), view: view))
+        views.append(ViewItem(id: data.index, view: view))
       case .curve(to: let point, control1: let control1, control2: let control2):
         let view = AnyView(drawView(content: UInt(data.index), at: data.newPoint, angle: data.angle))
-        views.append(ViewItem(id: UUID(), view: view))
+        views.append(ViewItem(id: data.index, view: view))
       case .quadCurve(to: let point, control: let control):
         break
       case .closeSubpath:
         let view = AnyView(drawView(content: UInt(data.index), at: data.newPoint, angle: data.angle))
-        views.append(ViewItem(id: UUID(), view: view))
+        views.append(ViewItem(id: data.index, view: view))
       }
     })
     
