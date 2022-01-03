@@ -1,36 +1,91 @@
 import SwiftUI
 
+// MARK: Shape Ornament Conent
+
+public protocol Ornamentable {
+  var id: UUID { get }
+  var view: AnyView { get }
+}
+
+public struct ShapeOrnament: Identifiable, Ornamentable {
+  public let id: UUID
+  public let view: AnyView
+}
+
+extension View {
+  
+  public func ornament(_ id: ShapeOrnament.ID) -> ShapeOrnament {
+    return ShapeOrnament(id: id,
+                        view: AnyView(self))
+  }
+  
+}
+
+@resultBuilder
+public struct ShapeContentBuilder {
+  
+  public static func buildBlock(_ components: ShapeOrnament) -> ShapeOrnament {
+    components
+  }
+
+  public static func buildEither(first component: ShapeOrnament) -> ShapeOrnament {
+    component
+  }
+  
+  public static func buildEither(second component: ShapeOrnament) -> ShapeOrnament {
+    component
+  }
+  
+}
+
+// MARK: ZStack
+
 public extension Shape {
   
   func stroke<NewContent>(itemCount: UInt? = nil,
-                          direction: Direction = .rightToLeft,
+                          from: CGFloat = 0,
+                          offsetPerItem: [CGPoint] = [],
                           spacing: [CGFloat] = [],
+                          layout: Layout = .clockwise,
                           accuracy: UInt = 100,
-                          @ViewBuilder innerContent: @escaping () -> NewContent) -> some View where NewContent : View {
+                          @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyle(shape: self,
-                                     innerContent: innerContent,
-                                     direction: direction,
-                                     itemCount: itemCount,
-                                     spacing: spacing,
-                                     accuracy: accuracy))
+                           innerContent: innerContent,
+                           itemCount: itemCount,
+                           from: from,
+                           offsetPerItem: offsetPerItem,
+                           spacing: spacing,
+                           layout: layout,
+                           accuracy: accuracy))
   }
   
+}
+
+// MARK: Canvas
+
+public extension Shape {
+  
   func strokeWithCanvas<NewContent>(itemCount: UInt? = nil,
-                                    direction: Direction = .rightToLeft,
+                                    from: CGFloat = 0,
+                                    offsetPerItem: [CGPoint] = [],
                                     spacing: [CGFloat] = [],
+                                    layout: Layout = .clockwise,
                                     accuracy: UInt = 100,
-                                    @ViewBuilder innerContent: @escaping () -> NewContent) -> some View where NewContent : View {
+                                    @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyleWithCanvas(shape: self,
                                      innerContent: innerContent,
-                                     direction: direction,
                                      itemCount: itemCount,
+                                     from: from,
+                                     offsetPerItem: offsetPerItem,
                                      spacing: spacing,
+                                     layout: layout,
                                      accuracy: accuracy))
   }
   
 }
 
-public enum Direction {
-  case rightToLeft
-  case leftToRight
+public enum Layout {
+  case clockwise
+  case anti_clockwise
+  case both
 }

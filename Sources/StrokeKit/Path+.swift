@@ -10,11 +10,11 @@ import SwiftUI
 
 extension Path {
   
-  /// Total length of the path
-  func totalLength(accuracy: UInt = 100) -> (length: CGFloat, sections: UInt) {
+  /// Total length of the path and how many segments it contains
+  func totalLengthAndSegments(accuracy: UInt = 100) -> (length: CGFloat, segments: UInt) {
     
     var accumulatedLength: CGFloat = 0
-    var sections: UInt = 0
+    var segments: UInt = 0
     var lastPoint: CGPoint = .zero
     var startPoint: CGPoint?
     
@@ -32,7 +32,7 @@ extension Path {
       case .line(to: let point):
         
         accumulatedLength += lastPoint.distance(to: point)
-        sections += 1
+        segments += 1
         lastPoint = point
       case .curve(to: let point, control1: let control1, control2: let control2):
         
@@ -41,7 +41,7 @@ extension Path {
         lastPoint = point
       case .quadCurve(to: let point, control: let control):
         //context.draw(r0, at: point * size)
-        sections += 1
+        segments += 1
         lastPoint = point
       case .closeSubpath:
         
@@ -52,11 +52,11 @@ extension Path {
         
         accumulatedLength += lastPoint.distance(to: startPoint)
         
-        sections += 1
+        segments += 1
       }
     }
     
-    return (accumulatedLength, sections)
+    return (accumulatedLength, segments)
   }
   
 }
