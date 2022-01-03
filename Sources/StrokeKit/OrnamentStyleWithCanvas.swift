@@ -12,12 +12,12 @@ import simd
 public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: Ornamentable {
   
   private let path: Path
-  private let innerContent: (UInt) -> NewContent
+  private let innerContent: (UInt, LayoutData) -> NewContent
   private let itemCount: UInt
   private let traverser: PathTraversal<S, NewContent>
 
   public init(shape: S,
-              @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent,
+              @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
               itemCount: UInt? = nil,
               from: CGFloat = 0,
               offsetPerItem: [CGPoint] = [],
@@ -72,7 +72,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
     } symbols: {
       
       ForEach((0..<Int(self.itemCount))) { index in
-        innerContent(UInt(index))
+        innerContent(UInt(index), LayoutData(position: .zero, angle: .zero))
           .view
           .tag("ornament_\(index)")
           .frame(height: 100)

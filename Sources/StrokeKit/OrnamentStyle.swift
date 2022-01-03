@@ -22,12 +22,12 @@ import simd
 public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: Ornamentable {
   
   private let path: Path
-  private let innerContent: (UInt) -> NewContent
+  private let innerContent: (UInt, LayoutData) -> NewContent
 
   private let traverser: PathTraversal<S, NewContent>
   
   public init(shape: S,
-              @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent,
+              @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
               itemCount: UInt? = nil,
               from: CGFloat = 0,
               offsetPerItem: [CGPoint] = [],
@@ -65,12 +65,12 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
   
   private func drawView(content index: UInt, at point: CGPoint, angle: Angle) -> some View {
     
-    innerContent(index)
+    innerContent(index, LayoutData(position: point, angle: angle))
       .view
       //.id(UUID())
-      .rotationEffect(angle)
-      .offset(x: point.x/2, y: point.y/2)
-      .position(x: point.x/2, y: point.y/2)
+//      .rotationEffect(angle)
+//      .offset(x: point.x/2, y: point.y/2)
+//      .position(x: point.x/2, y: point.y/2)
     
   }
   

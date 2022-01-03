@@ -38,6 +38,11 @@ public struct ShapeContentBuilder {
   
 }
 
+public struct LayoutData {
+  public let position: CGPoint
+  public let angle: Angle
+}
+
 // MARK: ZStack
 
 public extension Shape {
@@ -49,7 +54,7 @@ public extension Shape {
                           layout: Layout = .clockwise,
                           rotateToPath: Bool = true,
                           accuracy: UInt = 100,
-                          @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent) -> some View where NewContent : Ornamentable {
+                          @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyle(shape: self,
                            innerContent: innerContent,
                            itemCount: itemCount,
@@ -74,7 +79,7 @@ public extension Shape {
                                     layout: Layout = .clockwise,
                                     rotateToPath: Bool = true,
                                     accuracy: UInt = 100,
-                                    @ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent) -> some View where NewContent : Ornamentable {
+                                    @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyleWithCanvas(shape: self,
                                      innerContent: innerContent,
                                      itemCount: itemCount,
