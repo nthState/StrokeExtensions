@@ -185,33 +185,35 @@ public extension PathTraversal {
       case .curve(to: let point, control1: let control1, control2: let control2):
         
         let curveLength = bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
-        let lengths = bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
+        let arcLengths = bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
         
         var tempDistance = distanceTravelled
         
         var tempLast = lastPoint
         var zero: CGFloat = 0
-        for (idx, accumulatingLength) in lengths.enumerated() {
+        for (idx, accumulatingLength) in arcLengths.enumerated() {
           
           switch _items[index] {
           case .spacer(distance: let dist):
             if (tempDistance + accumulatingLength - zero) >= dist {
               
               index += 1
-              tempDistance += accumulatingLength
+              tempDistance = accumulatingLength
               zero = accumulatingLength
               
-              varyingPercentage = accumulatingLength
+              varyingPercentage = accumulatingLength / curveLength
               
-              fallthrough
+              //fallthrough
             }
           case .shape:
             //CGFloat(idx) / CGFloat(accuracy)
             //let r = varyingPercentage.truncatingRemainder(dividingBy: 1)
             let p = varyingPercentage //== 1 ? 1 : r
             
-            let x = _bezier_point_x(t: p, a: lastPoint, b: control1, c: control2, d: point)
-            let y = _bezier_point_y(t: p, a: lastPoint, b: control1, c: control2, d: point)
+            let e = bezier_evenlyDistributed(u: p, arcLengths: arcLengths)
+            
+            let x = _bezier_point_x(t: e, a: lastPoint, b: control1, c: control2, d: point)
+            let y = _bezier_point_y(t: e, a: lastPoint, b: control1, c: control2, d: point)
             
             let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
             
