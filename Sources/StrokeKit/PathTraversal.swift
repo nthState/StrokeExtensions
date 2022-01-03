@@ -19,7 +19,7 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
   
   private let path: Path
   //private let innerContent: NewContent
-  private let itemCount: UInt?
+  private let itemCount: UInt
   private let offsetPerItem: [CGPoint]
   private let from: CGFloat
   private let spacing: [CGFloat]
@@ -48,7 +48,7 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
     
     self.path = shape.path(in: CGRect.unit)
     //self.innerContent = innerContent(7)
-    self.itemCount = itemCount
+    //self.itemCount = itemCount
     self.offsetPerItem = offsetPerItem
     self.spacing = spacing
     self.from = from
@@ -60,27 +60,34 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
     self._centerPoint = self._totalLength / 2
     self._startDistance = self._totalLength * from
     
-//    switch layout {
-//    case .clockwise:
-//      _distance = 0
-//    case .anti_clockwise:
-//      _distance = self._totalLength
-//    case .both:
-//      _distance = self._totalLength / 2
-//    }
+    //    switch layout {
+    //    case .clockwise:
+    //      _distance = 0
+    //    case .anti_clockwise:
+    //      _distance = self._totalLength
+    //    case .both:
+    //      _distance = self._totalLength / 2
+    //    }
     
-    _items.append(.spacer(distance: self._startDistance))
+    var accumulatingDistance: CGFloat = self._startDistance
     
-    if let itemCount = self.itemCount {
-      let ornamentEvery = Int(floor(self._totalLength / CGFloat(itemCount)))
-
-      for i in 0..<ornamentEvery {
-        _items.append(.shape)
-        if self.spacing.indices.contains(i) {
-          _items.append(.spacer(distance: self.spacing[i]))
-        }
+    _items.append(.spacer(distance: accumulatingDistance))
+    
+    
+    self.itemCount = itemCount ?? 10
+    let ornamentEvery = (self._totalLength) / CGFloat(self.itemCount)
+    
+    var ctr: Int = 0
+    for _ in stride(from: 0, to: self._totalLength, by: ornamentEvery) {
+      _items.append(.shape)
+      accumulatingDistance += ornamentEvery
+      _items.append(.spacer(distance: accumulatingDistance))
+      if self.spacing.indices.contains(ctr) {
+        _items.append(.spacer(distance: self.spacing[ctr]))
       }
+      ctr += 1
     }
+    
     
     
   }
@@ -100,18 +107,20 @@ public extension PathTraversal {
   
   func traverse(callback: event) {
     
-    let innerContentWidth: CGFloat = 100
     let size: CGSize = CGSize(width: 100, height: 100)
     var startPoint: CGPoint = .zero
     var lastPoint: CGPoint = .zero
     
+    var viewIndex: Int = 0
     var index: Int = 0
     var distanceTravelled: CGFloat = 0
+    
+    var varyingPercentage: CGFloat = 0
     
     path.forEach { element in
       switch element {
       case .move(to: let point):
-
+        
         startPoint = point
         lastPoint = point
         distanceTravelled = 0
@@ -122,100 +131,203 @@ public extension PathTraversal {
       case .line(to: let point):
         
         let length = lastPoint.distance(to: point)
-        let repeatCount = 10//self.itemCount ?? UInt((length * 100) / innerContentWidth)
+  
+        let by: CGFloat = length / CGFloat(accuracy)
         
-        let itemCount: CGFloat = CGFloat(repeatCount)
-        let by: CGFloat = 1 / itemCount
+        var tempDistance = distanceTravelled
         
         var tempLast = lastPoint
-        for item in stride(from: 0, through: 1, by: by) {
+        var zero: CGFloat = 0
+        var idx: Int = 0
+        for item in stride(from: 0, through: length, by: by) {
           
-          
-          distanceTravelled += by
-          guard distanceTravelled >= self._startDistance else {
-            continue
+          switch _items[index] {
+          case .spacer(distance: let dist):
+            if (tempDistance + item - zero) >= dist {
+              
+              index += 1
+              tempDistance += item
+              zero = item
+              
+              varyingPercentage = item
+              
+              fallthrough
+            }
+          case .shape:
+            //let r = varyingPercentage.truncatingRemainder(dividingBy: 1)
+            let p = varyingPercentage// == 1 ? 1 : r
+            let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(point), t: Float(p))
+            
+              let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
+            
+              let newPoint = newCGPoint.cgPoint * size
+            
+              tempLast = newCGPoint.cgPoint
+
+            guard viewIndex < itemCount else {
+              return
+            }
+            
+            callback(.line(to: point), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+            index += 1
+            viewIndex += 1
           }
           
-          let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(point), t: Float(item))
-          
-          let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
-          
-          let newPoint = newCGPoint.cgPoint * size
-          
-          tempLast = newCGPoint.cgPoint
-          
-          callback(.line(to: point), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: index))
-          index += 1
+          idx += 1
+
         }
+        
+        
+          distanceTravelled += length
         
         
         lastPoint = point
       case .curve(to: let point, control1: let control1, control2: let control2):
         
-        let length = bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
+        let curveLength = bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
         let lengths = bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
         
-        let repeatCount = 10//self.itemCount ?? UInt((length * 100) / innerContentWidth)
-        
-        let itemCount: CGFloat = CGFloat(repeatCount)
-        let by: CGFloat = 1 / itemCount
+        var tempDistance = distanceTravelled
         
         var tempLast = lastPoint
-        for item in stride(from: 0, through: 1, by: by) {
+        var zero: CGFloat = 0
+        for (idx, accumulatingLength) in lengths.enumerated() {
           
-          let e = bezier_evenlyDistributed(u: item, arcLengths: lengths)
-          
-          distanceTravelled += by
-          guard distanceTravelled >= self._startDistance else {
-            continue
+          switch _items[index] {
+          case .spacer(distance: let dist):
+            if (tempDistance + accumulatingLength - zero) >= dist {
+              
+              index += 1
+              tempDistance += accumulatingLength
+              zero = accumulatingLength
+              
+              varyingPercentage = accumulatingLength
+              
+              fallthrough
+            }
+          case .shape:
+            //CGFloat(idx) / CGFloat(accuracy)
+            //let r = varyingPercentage.truncatingRemainder(dividingBy: 1)
+            let p = varyingPercentage //== 1 ? 1 : r
+            
+            let x = _bezier_point_x(t: p, a: lastPoint, b: control1, c: control2, d: point)
+            let y = _bezier_point_y(t: p, a: lastPoint, b: control1, c: control2, d: point)
+            
+            let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
+            
+            let newPoint = CGPoint(x: x, y: y) * size
+            
+            tempLast = CGPoint(x: x, y: y)
+            
+            guard viewIndex < itemCount else {
+              return
+            }
+            
+            callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+            index += 1
+            viewIndex += 1
           }
           
-          let x = _bezier_point_x(t: e, a: lastPoint, b: control1, c: control2, d: point)
-          let y = _bezier_point_y(t: e, a: lastPoint, b: control1, c: control2, d: point)
           
-          let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
-          //let angleInDegrees = CGPoint(x: x, y: y).angle(between: tempLast)
           
-          let newPoint = CGPoint(x: x, y: y) * size
-          
-          tempLast = CGPoint(x: x, y: y)
-          
-          callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: index))
-          index += 1
         }
+        
+   
+          distanceTravelled += curveLength
+        
         
         lastPoint = point
       case .quadCurve(to: let point, control: let control):
-        
+#warning("UNIMPLEMENTED - Chris to add")
         lastPoint = point
         index += 1
+        viewIndex += 1
       case .closeSubpath:
-        let length = lastPoint.distance(to: startPoint)
-        let repeatCount = 10//self.itemCount ?? UInt((length * 100) / innerContentWidth)
+//        let length = lastPoint.distance(to: startPoint)
+//        let repeatCount = 10//self.itemCount ?? UInt((length * 100) / innerContentWidth)
+//
+//        let itemCount: CGFloat = CGFloat(repeatCount)
+//        let by: CGFloat = 1 / itemCount
+//
+//        var tempLast = lastPoint
+//        for item in stride(from: 0, through: 1, by: by) {
+//
+//          distanceTravelled += by
+//          guard distanceTravelled >= self._startDistance else {
+//            continue
+//          }
+//
+//          let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(startPoint), t: Float(item))
+//
+//          let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
+//
+//          let newPoint = newCGPoint.cgPoint * size
+//
+//          tempLast = newCGPoint.cgPoint
+//
+//          callback(.closeSubpath, Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+//
+//          index += 1
+//          viewIndex += 1
+//        }
         
-        let itemCount: CGFloat = CGFloat(repeatCount)
-        let by: CGFloat = 1 / itemCount
+        let point = startPoint
+        
+        let length = lastPoint.distance(to: point)
+  
+        let by: CGFloat = length / CGFloat(accuracy)
+        
+        var tempDistance = distanceTravelled
         
         var tempLast = lastPoint
-        for item in stride(from: 0, through: 1, by: by) {
+        var zero: CGFloat = 0
+        var idx: Int = 0
+        for item in stride(from: 0, through: length, by: by) {
           
-          distanceTravelled += by
-          guard distanceTravelled >= self._startDistance else {
-            continue
+          switch _items[index] {
+          case .spacer(distance: let dist):
+            if (tempDistance + item - zero) >=  dist {
+              
+              index += 1
+              tempDistance += item
+              zero = item
+              
+              varyingPercentage = item
+              
+              fallthrough
+            }
+          case .shape:
+            //let r = varyingPercentage.truncatingRemainder(dividingBy: 1)
+            let p = varyingPercentage //== 1 ? 1 : r
+            
+            let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(point), t: Float(p))
+            
+              let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
+            
+              let newPoint = newCGPoint.cgPoint * size
+            
+              tempLast = newCGPoint.cgPoint
+
+            guard viewIndex < itemCount else {
+              return
+            }
+            
+            callback(.closeSubpath, Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+            index += 1
+            viewIndex += 1
           }
           
-          let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(startPoint), t: Float(item))
-          
-          let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
-          
-          let newPoint = newCGPoint.cgPoint * size
-          
-          tempLast = newCGPoint.cgPoint
-          
-          callback(.closeSubpath, Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: index))
-          
-          index += 1
+          idx += 1
+
         }
+        
+        
+          distanceTravelled += length
+        
+        
+        lastPoint = point
+        
+        
         
       }
       
@@ -225,3 +337,75 @@ public extension PathTraversal {
   }
   
 }
+
+
+
+//let length = bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
+//let lengths = bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
+//
+//let repeatCount = 10//self.itemCount ?? UInt((length * 100) / innerContentWidth)
+//
+//let itemCount: CGFloat = CGFloat(repeatCount)
+//let by: CGFloat = 1 / itemCount
+//
+//var tempLast = lastPoint
+//for item in stride(from: 0, through: 1, by: by) {
+//
+//  let e = bezier_evenlyDistributed(u: item, arcLengths: lengths)
+//
+//  distanceTravelled += by
+//  guard distanceTravelled >= self._startDistance else {
+//    continue
+//  }
+//
+//  let x = _bezier_point_x(t: e, a: lastPoint, b: control1, c: control2, d: point)
+//  let y = _bezier_point_y(t: e, a: lastPoint, b: control1, c: control2, d: point)
+//
+//  let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
+//
+//  let newPoint = CGPoint(x: x, y: y) * size
+//
+//  tempLast = CGPoint(x: x, y: y)
+//
+//  callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: index))
+//  index += 1
+//}
+
+
+
+
+
+
+
+
+
+//let length = lastPoint.distance(to: point)
+//let repeatCount = 10//self.itemCount ?? UInt((length * 100) / innerContentWidth)
+//
+//let itemCount: CGFloat = CGFloat(repeatCount)
+//let by: CGFloat = 1 / itemCount
+//
+//var tempLast = lastPoint
+//for item in stride(from: 0, through: 1, by: by) {
+//
+//
+//  distanceTravelled += by
+//  guard distanceTravelled >= self._startDistance else {
+//    continue
+//  }
+//
+//  let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(point), t: Float(item))
+//
+//  let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
+//
+//  let newPoint = newCGPoint.cgPoint * size
+//
+//  tempLast = newCGPoint.cgPoint
+//
+//  callback(.line(to: point), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+//  index += 1
+//  viewIndex += 1
+//}
+//
+//
+//lastPoint = point

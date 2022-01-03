@@ -23,7 +23,7 @@ extension Path {
       case .move(to: let point):
         lastPoint = point
         
-        guard startPoint != nil else {
+        guard startPoint == nil else {
           return
         }
         
