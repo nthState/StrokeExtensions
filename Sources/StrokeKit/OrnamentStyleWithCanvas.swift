@@ -18,12 +18,10 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
 
   public init(shape: S,
               @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
-              itemCount: UInt? = nil,
+              itemCount: UInt = 1,
               from: CGFloat = 0,
-              offsetPerItem: [CGPoint] = [],
-              spacing: [CGFloat] = [],
-              layout: Layout = .clockwise,
-              rotateToPath: Bool = true,
+              spacing: CGFloat = 0,
+              spread: Spread = .evenly,
               accuracy: UInt = 100) {
     
     self.path = shape.path(in: CGRect.unit)
@@ -34,9 +32,8 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
                                    //innerContent: innerContent,
                                    itemCount: itemCount,
                                    from: from,
-                                   offsetPerItem: offsetPerItem,
                                    spacing: spacing,
-                                   layout: layout,
+                                   spread: spread,
                                    accuracy: accuracy)
   }
   

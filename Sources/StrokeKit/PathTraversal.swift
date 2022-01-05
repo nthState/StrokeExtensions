@@ -20,15 +20,15 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
   private let path: Path
   
   private let itemCount: UInt
-  private let offsetPerItem: [CGPoint]
   private let from: CGFloat
-  private let spacing: [CGFloat]
-  private let layout: Layout
+  private let spacing: CGFloat
+  private let spread: Spread
   private let accuracy: UInt
+  
+  private let divisionByZeroMin: CGFloat = 0.0001
   
   private let _totalLength: CGFloat
   private let _totalSegments: UInt
-  private let _centerPoint: CGFloat
   
   private var _startDistance: CGFloat = 0
   
@@ -37,46 +37,31 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
   
   public init(shape: S,
               //@ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent,
-              itemCount: UInt?,
+              itemCount: UInt = 1,
               from: CGFloat = 0,
-              offsetPerItem: [CGPoint] = [],
-              spacing: [CGFloat] = [],
-              layout: Layout = .clockwise,
+              spacing: CGFloat = 0,
+              spread: Spread = .evenly,
               accuracy: UInt = 100) {
     
     precondition(from >= 0 && from <= 1, "From must be a percentage in range 0.0 to 1.0")
     
     self.path = shape.path(in: CGRect.unit)
     
-    self.offsetPerItem = offsetPerItem
+    
     self.spacing = spacing
     self.from = from
-    self.layout = layout
+    self.spread = spread
     self.accuracy = accuracy
     
     (self._totalLength, self._totalSegments) = self.path.totalLengthAndSegments()
     
     
-    
-    
-    
-    
-//    let segments = [Segment(0, 1, .space), Segment(1, 2, .space)]
-//    let shapes = [Segment(0.4, .shape), Segment(1.4, .shape)]
-//
-//    let actual: [Segment] = SegmentSlicer.slice(segments, shapes)
-//
+    // Create an array of segments that we'll insert the shapes into
     let pathSegments = (Int(0)..<Int(self._totalSegments)).compactMap({ index in
       return Piece(CGFloat(index), CGFloat(index) + 1, .space)
     })
     
     
-    
-    
-    
-    
-    
-    self._centerPoint = self._totalLength / 2
     self._startDistance = self._totalLength * from
     
     //    switch layout {
@@ -96,14 +81,27 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
     shapes.append(Piece(0, accumulatingDistance, .space))
     
     
-    self.itemCount = itemCount ?? 10
-    let ornamentEvery = (self._totalLength) / CGFloat(self.itemCount)
+    self.itemCount = itemCount
     
-    
-    for position in stride(from: 0, to: self._totalLength, by: ornamentEvery) {
+    let ornamentEvery: CGFloat
+    switch spread {
+    case .evenly:
+      ornamentEvery = (self._totalLength) / CGFloat(self.itemCount)
+      
+      for position in stride(from: 0, to: self._totalLength, by: ornamentEvery) {
+        shapes.append(Piece(position + accumulatingDistance, .shape))
+      }
+      
+    case .from_start:
 
-      shapes.append(Piece(position + accumulatingDistance, .shape))
+      for item in 0..<self.itemCount {
+        shapes.append(Piece((CGFloat(item) * (spacing + divisionByZeroMin)) + accumulatingDistance, .shape))
+      }
+      
     }
+    
+    
+    
     
     self._segments = SegmentSlicer.slice(pathSegments, shapes)
     

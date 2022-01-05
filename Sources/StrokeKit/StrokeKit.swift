@@ -47,22 +47,18 @@ public struct LayoutData {
 
 public extension Shape {
   
-  func stroke<NewContent>(itemCount: UInt? = nil,
+  func stroke<NewContent>(itemCount: UInt = 1,
                           from: CGFloat = 0,
-                          offsetPerItem: [CGPoint] = [],
-                          spacing: [CGFloat] = [],
-                          layout: Layout = .clockwise,
-                          rotateToPath: Bool = true,
+                          spacing: CGFloat = 0,
+                          spread: Spread = .evenly,
                           accuracy: UInt = 100,
                           @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyle(shape: self,
                            innerContent: innerContent,
                            itemCount: itemCount,
                            from: from,
-                           offsetPerItem: offsetPerItem,
                            spacing: spacing,
-                           layout: layout,
-                           rotateToPath: rotateToPath,
+                           spread: spread,
                            accuracy: accuracy))
   }
   
@@ -72,29 +68,37 @@ public extension Shape {
 
 public extension Shape {
   
-  func strokeWithCanvas<NewContent>(itemCount: UInt? = nil,
+  func strokeWithCanvas<NewContent>(itemCount: UInt = 1,
                                     from: CGFloat = 0,
-                                    offsetPerItem: [CGPoint] = [],
-                                    spacing: [CGFloat] = [],
-                                    layout: Layout = .clockwise,
-                                    rotateToPath: Bool = true,
+                                    spacing: CGFloat = 0,
+                                    spread: Spread = .evenly,
                                     accuracy: UInt = 100,
                                     @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyleWithCanvas(shape: self,
                                      innerContent: innerContent,
                                      itemCount: itemCount,
                                      from: from,
-                                     offsetPerItem: offsetPerItem,
                                      spacing: spacing,
-                                     layout: layout,
-                                     rotateToPath: rotateToPath,
+                                     spread: spread,
                                      accuracy: accuracy))
   }
   
 }
 
-public enum Layout {
-  case clockwise
-  //case anti_clockwise
-  //case both
+public enum Spread {
+  case evenly
+  case from_start
+}
+
+extension Spread {
+  
+  public var description: String {
+    switch self {
+    case .evenly:
+      return "Evenly"
+    case .from_start:
+      return "From Start"
+    }
+  }
+  
 }
