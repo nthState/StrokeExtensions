@@ -6,32 +6,54 @@ Adorn your SwiftUI Shapes/Beziers with Ornaments
 Draw content along a bezier
 
 ```
-stroke<NewContent>(itemCount: UInt? = nil,
-                          direction: Direction = .rightToLeft,
+public extension Shape {
+  
+  func stroke<NewContent>(itemCount: UInt? = nil,
+                          from: CGFloat = 0,
+                          offsetPerItem: [CGPoint] = [],
                           spacing: [CGFloat] = [],
+                          layout: Layout = .clockwise,
+                          rotateToPath: Bool = true,
                           accuracy: UInt = 100,
-                          @ViewBuilder innerContent: @escaping () -> NewContent)
+                          @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
+    modifier(OrnamentStyle(shape: self,
+                           innerContent: innerContent,
+                           itemCount: itemCount,
+                           from: from,
+                           offsetPerItem: offsetPerItem,
+                           spacing: spacing,
+                           layout: layout,
+                           rotateToPath: rotateToPath,
+                           accuracy: accuracy))
+  }
+  
+}
 ```
 
 Draw content along a bezier using a `Canvas` as the backing buffer
 
 ```
-strokeWithCanvas<NewContent>(itemCount: UInt? = nil,
-                          direction: Direction = .rightToLeft,
-                          spacing: [CGFloat] = [],
-                          accuracy: UInt = 100,
-                          @ViewBuilder innerContent: @escaping () -> NewContent)
+public extension Shape {
+  
+  func strokeWithCanvas<NewContent>(itemCount: UInt? = nil,
+                                    from: CGFloat = 0,
+                                    offsetPerItem: [CGPoint] = [],
+                                    spacing: [CGFloat] = [],
+                                    layout: Layout = .clockwise,
+                                    rotateToPath: Bool = true,
+                                    accuracy: UInt = 100,
+                                    @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
+    modifier(OrnamentStyleWithCanvas(shape: self,
+                                     innerContent: innerContent,
+                                     itemCount: itemCount,
+                                     from: from,
+                                     offsetPerItem: offsetPerItem,
+                                     spacing: spacing,
+                                     layout: layout,
+                                     rotateToPath: rotateToPath,
+                                     accuracy: accuracy))
+  }
+  
+}
 ```
 
-Useful for debugging shapes, or just calling our the joints on a `shape`
-
-```
-strokeAtJoins<NewContent>(itemCount: UInt? = nil,
-                          direction: Direction = .rightToLeft,
-                          spacing: [CGFloat] = [],
-                          accuracy: UInt = 100,
-                          @ViewBuilder innerContent: @escaping () -> NewContent)
-
-```
-
-we could have  a path iterator that returns a closure to draw the view item

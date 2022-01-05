@@ -32,15 +32,17 @@ extension Path {
       case .line(to: let point):
         
         accumulatedLength += lastPoint.distance(to: point)
+        
         segments += 1
         lastPoint = point
       case .curve(to: let point, control1: let control1, control2: let control2):
         
         accumulatedLength += bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: accuracy)
         
+        segments += 1
         lastPoint = point
-      case .quadCurve(to: let point, control: let control):
-        //context.draw(r0, at: point * size)
+      case .quadCurve(to: let point, control: _):
+        
         segments += 1
         lastPoint = point
       case .closeSubpath:
@@ -48,7 +50,6 @@ extension Path {
         guard let startPoint = startPoint else {
           return
         }
-        
         
         accumulatedLength += lastPoint.distance(to: startPoint)
         

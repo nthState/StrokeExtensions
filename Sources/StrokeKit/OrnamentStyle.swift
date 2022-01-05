@@ -67,10 +67,6 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
     
     innerContent(index, LayoutData(position: point, angle: angle))
       .view
-      //.id(UUID())
-//      .rotationEffect(angle)
-//      .offset(x: point.x/2, y: point.y/2)
-//      .position(x: point.x/2, y: point.y/2)
     
   }
   
