@@ -21,19 +21,21 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
               itemCount: UInt = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,
-              spread: Spread = .evenly,
+              distribution: Distribution = .evenly,
+              spawn: Spawn = .forward,
               accuracy: UInt = 100) {
     
     self.path = shape.path(in: CGRect.unit)
     self.innerContent = innerContent
-    self.itemCount = itemCount ?? 5
+    self.itemCount = itemCount
 
     self.traverser = PathTraversal(shape: shape,
                                    //innerContent: innerContent,
                                    itemCount: itemCount,
                                    from: from,
                                    spacing: spacing,
-                                   spread: spread,
+                                   distribution: distribution,
+                                   spawn: spawn,
                                    accuracy: accuracy)
   }
   
@@ -55,13 +57,13 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
         case .move(to: let point):
           break
         case .line(to: let point):
-          drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle)
+          drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal)
         case .curve(to: let point, control1: let control1, control2: let control2):
-          drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle)
+          drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal)
         case .quadCurve(to: let point, control: let control):
           break
         case .closeSubpath:
-          drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle)
+          drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal)
         }
       })
       
@@ -69,7 +71,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
     } symbols: {
       
       ForEach((0..<Int(self.itemCount))) { index in
-        innerContent(UInt(index), LayoutData(position: .zero, angle: .zero))
+        innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
           .view
           .tag("ornament_\(index)")
           .frame(height: 100)
@@ -79,7 +81,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
     
   }
   
-  private func drawSymbol(resolvedSymbol: GraphicsContext.ResolvedSymbol?, on context: GraphicsContext, at point: CGPoint, angle: Angle) {
+  private func drawSymbol(resolvedSymbol: GraphicsContext.ResolvedSymbol?, on context: GraphicsContext, at point: CGPoint, angle: Angle, leftNormal: CGPoint) {
     
     guard let symbol = resolvedSymbol else {
       return

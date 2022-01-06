@@ -9,6 +9,10 @@ import CoreGraphics
 
 extension CGPoint {
   
+  static func * (point: CGPoint, size: CGFloat) -> CGPoint {
+    return CGPoint(x: point.x * size, y: point.y * size)
+  }
+  
   static func * (point: CGPoint, size: CGSize) -> CGPoint {
     return CGPoint(x: point.x * size.width, y: point.y * size.height)
   }
@@ -34,6 +38,15 @@ extension CGPoint {
     let radians = atan2(center.y, center.x)
     let degrees = radians * 180 / .pi
     return degrees > 0 ? degrees : degrees + degrees
+  }
+  
+  func normalize() -> CGPoint {
+    let s = 1.0 / magnitude()
+    return self * s
+  }
+  
+  func rotateLeft() -> CGPoint {
+    CGPoint(x: -self.y, y: self.x)
   }
 }
 

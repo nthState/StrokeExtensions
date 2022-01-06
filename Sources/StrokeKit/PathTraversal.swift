@@ -22,7 +22,8 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
   private let itemCount: UInt
   private let from: CGFloat
   private let spacing: CGFloat
-  private let spread: Spread
+  private let distribution: Distribution
+  private let spawn: Spawn
   private let accuracy: UInt
   
   private let divisionByZeroMin: CGFloat = 0.0001
@@ -40,7 +41,8 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
               itemCount: UInt = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,
-              spread: Spread = .evenly,
+              distribution: Distribution = .evenly,
+              spawn: Spawn = .forward,
               accuracy: UInt = 100) {
     
     precondition(from >= 0 && from <= 1, "From must be a percentage in range 0.0 to 1.0")
@@ -50,8 +52,10 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
     
     self.spacing = spacing
     self.from = from
-    self.spread = spread
+    self.distribution = distribution
+    self.spawn = spawn
     self.accuracy = accuracy
+    self.itemCount = itemCount
     
     (self._totalLength, self._totalSegments) = self.path.totalLengthAndSegments()
     
@@ -61,30 +65,35 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
       return Piece(CGFloat(index), CGFloat(index) + 1, .space)
     })
     
-    
     self._startDistance = self._totalLength * from
     
-    //    switch layout {
-    //    case .clockwise:
-    //      _distance = 0
-    //    case .anti_clockwise:
-    //      _distance = self._totalLength
-    //    case .both:
-    //      _distance = self._totalLength / 2
-    //    }
+    switch spawn {
+    case .forward:
+      self._segments = forward(pathSegments: pathSegments)
+    case .backward:
+      self._segments = backward(pathSegments: pathSegments.reversed())
+    }
+
+  }
+  
+}
+
+// MARK: Layout
+
+public extension PathTraversal {
+  
+  private func forward(pathSegments: [Piece]) -> [Segment] {
     
     var shapes: [Piece] = []
     
     let accumulatingDistance: CGFloat = self._startDistance
     
-    //_items.append(.spacer(distance: accumulatingDistance))
     shapes.append(Piece(0, accumulatingDistance, .space))
     
     
-    self.itemCount = itemCount
     
     let ornamentEvery: CGFloat
-    switch spread {
+    switch distribution {
     case .evenly:
       ornamentEvery = (self._totalLength) / CGFloat(self.itemCount)
       
@@ -92,7 +101,7 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
         shapes.append(Piece(position + accumulatingDistance, .shape))
       }
       
-    case .from_start:
+    case .continuous:
 
       for item in 0..<self.itemCount {
         shapes.append(Piece((CGFloat(item) * (spacing + divisionByZeroMin)) + accumulatingDistance, .shape))
@@ -100,14 +109,40 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
       
     }
     
-    
-    
-    
-    self._segments = SegmentSlicer.slice(pathSegments, shapes)
+    return SegmentSlicer.slice(pathSegments, shapes)
     
   }
-  
+
+  private func backward(pathSegments: [Piece]) -> [Segment] {
+    
+    var shapes: [Piece] = []
+    
+    let accumulatingDistance: CGFloat = self._startDistance
+    
+    let ornamentEvery: CGFloat
+    switch distribution {
+    case .evenly:
+      ornamentEvery = (self._totalLength) / CGFloat(self.itemCount)
+      
+      for position in stride(from: self._totalLength, to: 0, by: ornamentEvery) {
+        shapes.append(Piece(position - accumulatingDistance, .shape))
+      }
+
+    case .continuous:
+
+      for item in 0..<self.itemCount {
+        shapes.append(Piece(1 - (CGFloat(item) * (spacing + divisionByZeroMin)) - accumulatingDistance, .shape))
+      }
+      
+    }
+
+    return SegmentSlicer.slice(pathSegments, shapes)
+    
+  }
+
 }
+
+// MARK: Traverse
 
 public extension PathTraversal {
   
@@ -117,6 +152,7 @@ public extension PathTraversal {
     let lastPoint: CGPoint
     let newPoint: CGPoint
     let angle: Angle
+    let leftNormal: CGPoint
     let index: Int
   }
   
@@ -138,7 +174,7 @@ public extension PathTraversal {
         startPoint = point
         lastPoint = point
         
-        callback(.move(to: point), Item(lastPoint: lastPoint, newPoint: point, angle: .zero, index: index))
+        callback(.move(to: point), Item(lastPoint: lastPoint, newPoint: point, angle: .zero, leftNormal: .zero, index: index))
 
       case .line(to: let point):
 
@@ -164,8 +200,10 @@ public extension PathTraversal {
           guard viewIndex < itemCount else {
             return
           }
+          
+          let leftNormal = (newPoint - tempLast).normalize().rotateLeft()
 
-          callback(.line(to: point), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+          callback(.line(to: point), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
           viewIndex += 1
           
@@ -201,8 +239,10 @@ public extension PathTraversal {
           guard viewIndex < itemCount else {
             return
           }
+          
+          let leftNormal = (newPoint - tempLast).normalize().rotateLeft()
 
-          callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+          callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
           viewIndex += 1
           
@@ -239,8 +279,10 @@ public extension PathTraversal {
           guard viewIndex < itemCount else {
             return
           }
+          
+          let leftNormal = (newPoint - tempLast).normalize().rotateLeft()
 
-          callback(.line(to: startPoint), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), index: viewIndex))
+          callback(.line(to: startPoint), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
           viewIndex += 1
           

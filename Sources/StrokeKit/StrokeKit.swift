@@ -41,6 +41,7 @@ public struct ShapeContentBuilder {
 public struct LayoutData {
   public let position: CGPoint
   public let angle: Angle
+  public let leftNormal: CGPoint
 }
 
 // MARK: Any Container
@@ -50,7 +51,8 @@ public extension Shape {
   func stroke<NewContent>(itemCount: UInt = 1,
                           from: CGFloat = 0,
                           spacing: CGFloat = 0,
-                          spread: Spread = .evenly,
+                          distribution: Distribution = .evenly,
+                          spawn: Spawn = .forward,
                           accuracy: UInt = 100,
                           @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyle(shape: self,
@@ -58,7 +60,8 @@ public extension Shape {
                            itemCount: itemCount,
                            from: from,
                            spacing: spacing,
-                           spread: spread,
+                           distribution: distribution,
+                           spawn: spawn,
                            accuracy: accuracy))
   }
   
@@ -71,7 +74,8 @@ public extension Shape {
   func strokeWithCanvas<NewContent>(itemCount: UInt = 1,
                                     from: CGFloat = 0,
                                     spacing: CGFloat = 0,
-                                    spread: Spread = .evenly,
+                                    distribution: Distribution = .evenly,
+                                    spawn: Spawn = .forward,
                                     accuracy: UInt = 100,
                                     @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
     modifier(OrnamentStyleWithCanvas(shape: self,
@@ -79,25 +83,48 @@ public extension Shape {
                                      itemCount: itemCount,
                                      from: from,
                                      spacing: spacing,
-                                     spread: spread,
+                                     distribution: distribution,
+                                     spawn: spawn,
                                      accuracy: accuracy))
   }
   
 }
 
-public enum Spread {
+// MARK: Distribution
+
+public enum Distribution {
   case evenly
-  case from_start
+  case continuous
 }
 
-extension Spread {
+extension Distribution {
   
   public var description: String {
     switch self {
     case .evenly:
       return "Evenly"
-    case .from_start:
+    case .continuous:
       return "From Start"
+    }
+  }
+  
+}
+
+// MARK: Spawn
+
+public enum Spawn {
+  case forward
+  case backward
+}
+
+extension Spawn {
+  
+  public var description: String {
+    switch self {
+    case .forward:
+      return "Forward"
+    case .backward:
+      return "Backward"
     }
   }
   
