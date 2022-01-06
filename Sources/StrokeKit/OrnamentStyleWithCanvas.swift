@@ -11,10 +11,17 @@ import simd
 
 public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: View {
   
+  private let shape: S
   private let path: Path
   private let innerContent: (UInt, LayoutData) -> NewContent
   private let itemCount: UInt
-  private let traverser: PathTraversal<S>
+  //private var traverser: PathTraversal<S>
+  private let from: CGFloat
+  private let spacing: CGFloat
+  private let distribution: Distribution
+  private let spawn: Spawn
+  private let accuracy: UInt
+  private let size: CGSize
 
   public init(shape: S,
               @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
@@ -23,25 +30,33 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
               spawn: Spawn = .forward,
+              size: CGSize = CGSize(width: 40, height: 40),
               accuracy: UInt = 100) {
     
+    self.shape = shape
     self.path = shape.path(in: CGRect.unit)
     self.innerContent = innerContent
     self.itemCount = itemCount
-
-    self.traverser = PathTraversal(shape: shape,
-                                   //innerContent: innerContent,
-                                   itemCount: itemCount,
-                                   from: from,
-                                   spacing: spacing,
-                                   distribution: distribution,
-                                   spawn: spawn,
-                                   accuracy: accuracy)
+    self.from = from
+    self.spacing = spacing
+    self.distribution = distribution
+    self.spawn = spawn
+    self.accuracy = accuracy
+    self.size = size
   }
   
   public func body(content: Content) -> some View {
     
-    Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: true) { context, size in
+    let traverser = PathTraversal(shape: self.shape,
+                                   //innerContent: innerContent,
+                                   itemCount: self.itemCount,
+                                   from: self.from,
+                                   spacing: self.spacing,
+                                   distribution: self.distribution,
+                                   spawn: self.spawn,
+                                   accuracy: self.accuracy)
+    
+    return Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: true) { context, size in
       
       var resolved: [GraphicsContext.ResolvedSymbol] = []
 
@@ -70,12 +85,23 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
       
     } symbols: {
       
-      ForEach((0..<Int(self.itemCount))) { index in
+      #warning("fix this")
+//      ForEach<Range<Int>, Int, ModifiedContent<ModifiedContent<_ConditionalContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<_ShapeView<Rectangle, Color>, _FrameLayout>, _OverlayModifier<_ShapeView<_StrokedShape<_Inset>, Color>>>, _RotationEffect>, _AnimationModifier<Bool>>, _AppearanceActionModifier>, ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<_ShapeView<Rectangle, Color>, _FrameLayout>, _OverlayModifier<_ShapeView<_StrokedShape<_Inset>, Color>>>, _RotationEffect>, _AnimationModifier<Bool>>, _AppearanceActionModifier>>, _TraitWritingModifier<TagValueTraitKey<String>>>, _FrameLayout>> count (4) != its initial count (3). `ForEach(_:content:)` should only be used for *constant* data. Instead conform data to `Identifiable` or use `ForEach(_:id:content:)` and provide an explicit `id`!
+      
+      ForEach(((0..<Int(self.itemCount))), id: \.self) { index in
         innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
+          
           //.view
           .tag("ornament_\(index)")
-          .frame(height: 100)
+          .frame(width: self.size.width, height: self.size.height)
       }
+      
+//      ForEach((0..<Int(self.itemCount))) { index in
+//        innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
+//          //.view
+//          .tag("ornament_\(index)")
+//          .frame(height: 100)
+//      }
 
     }
     
@@ -88,7 +114,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
     }
     
     context.drawLayer { layer in
-      layer.translateBy(x: point.x, y: point.y)
+      layer.translateBy(x: point.x * self.size.width, y: point.y * self.size.height)
       layer.rotate(by: angle)
       layer.draw(symbol, at: .zero, anchor: .center)
     }

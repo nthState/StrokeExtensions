@@ -76,6 +76,7 @@ public extension Shape {
                                     spacing: CGFloat = 0,
                                     distribution: Distribution = .evenly,
                                     spawn: Spawn = .forward,
+                                    size: CGSize = CGSize(width: 40, height: 40),
                                     accuracy: UInt = 100,
                                     @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyleWithCanvas(shape: self,
@@ -85,6 +86,7 @@ public extension Shape {
                                      spacing: spacing,
                                      distribution: distribution,
                                      spawn: spawn,
+                                     size: size,
                                      accuracy: accuracy))
   }
   

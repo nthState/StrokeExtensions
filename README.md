@@ -56,6 +56,6 @@ public extension Shape {
 
 TODO
 
-- can we get rid of .ornament?
-- remove * size from code
-- animation start stop
+- canvas
+- animate on add
+- backward has wrong shape on step
