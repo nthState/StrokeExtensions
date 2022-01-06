@@ -10,10 +10,10 @@ import CoreGraphics
 import SwiftUI
 import simd
 
-private enum PathType {
-  case spacer(distance: CGFloat)
-  case shape
-}
+//private enum PathType {
+//  case spacer(distance: CGFloat)
+//  case shape
+//}
 
 public class PathTraversal<S> where S: Shape {
   
@@ -33,7 +33,7 @@ public class PathTraversal<S> where S: Shape {
   
   private var _startDistance: CGFloat = 0
   
-  private var _items: [PathType] = []
+  //private var _items: [PathType] = []
   private var _segments: [Segment] = []
   
   public init(shape: S,
@@ -157,7 +157,7 @@ public extension PathTraversal {
   
   func traverse(callback: event) {
     
-    let size: CGSize = CGSize(width: 100, height: 100)
+    //let size: CGSize = CGSize(width: 100, height: 100)
     var startPoint: CGPoint = .zero
     var lastPoint: CGPoint = .zero
     
@@ -192,7 +192,7 @@ public extension PathTraversal {
 
           let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
 
-          let newPoint = newCGPoint.cgPoint * size
+          let newPoint = newCGPoint.cgPoint //* size
 
           
 
@@ -231,7 +231,7 @@ public extension PathTraversal {
 
           let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
 
-          let newPoint = CGPoint(x: x, y: y) * size
+          let newPoint = CGPoint(x: x, y: y) //* size
 
           
 
@@ -239,7 +239,7 @@ public extension PathTraversal {
             return
           }
           
-          let leftNormal = (newPoint - tempLast).normalize().rotateLeft()
+          let leftNormal = (newPoint - tempLast).normalize().rotateLeft() * 10
 
           callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
@@ -271,7 +271,7 @@ public extension PathTraversal {
 
           let angleInDegrees = tempLast.angle(between: newCGPoint.cgPoint)
 
-          let newPoint = newCGPoint.cgPoint * size
+          let newPoint = newCGPoint.cgPoint //* size
 
           
 
@@ -279,7 +279,7 @@ public extension PathTraversal {
             return
           }
           
-          let leftNormal = (newPoint - tempLast).normalize().rotateLeft()
+          let leftNormal = (newPoint - tempLast).normalize().rotateLeft() * 10
 
           callback(.line(to: startPoint), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1

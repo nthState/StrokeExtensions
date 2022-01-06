@@ -7,7 +7,7 @@
 
 import CoreGraphics
 
-extension CGPoint {
+public extension CGPoint {
   
   static func * (point: CGPoint, size: CGFloat) -> CGPoint {
     return CGPoint(x: point.x * size, y: point.y * size)
