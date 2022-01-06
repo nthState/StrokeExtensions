@@ -70,7 +70,7 @@ public class PathTraversal<S> where S: Shape {
     case .forward:
       self._segments = forward(pathSegments: pathSegments)
     case .backward:
-      self._segments = backward(pathSegments: pathSegments.reversed())
+      self._segments = backward(pathSegments: pathSegments)
     }
 
   }
@@ -129,8 +129,8 @@ public extension PathTraversal {
 
     case .continuous:
 
-      for item in 0..<self.itemCount {
-        shapes.append(Piece(1 - (CGFloat(item) * (spacing + divisionByZeroMin)) - accumulatingDistance, .shape))
+      for item in (0..<self.itemCount).reversed() {
+        shapes.append(Piece((self._totalLength) - (CGFloat(item) * (spacing + divisionByZeroMin)) - accumulatingDistance, .shape))
       }
       
     }
