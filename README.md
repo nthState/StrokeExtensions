@@ -56,9 +56,6 @@ public extension Shape {
 
 TODO
 
-- Triangle
-- Bunting
-- leftNormal
-- spawn
+- can we get rid of .ornament?
 - remove * size from code
 - animation start stop

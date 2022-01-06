@@ -15,7 +15,7 @@ private enum PathType {
   case shape
 }
 
-public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentable {
+public class PathTraversal<S> where S: Shape {
   
   private let path: Path
   
@@ -37,7 +37,6 @@ public class PathTraversal<S, NewContent> where S: Shape, NewContent: Ornamentab
   private var _segments: [Segment] = []
   
   public init(shape: S,
-              //@ShapeContentBuilder innerContent: @escaping (UInt) -> NewContent,
               itemCount: UInt = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,

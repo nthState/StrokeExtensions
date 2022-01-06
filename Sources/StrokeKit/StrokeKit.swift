@@ -54,7 +54,7 @@ public extension Shape {
                           distribution: Distribution = .evenly,
                           spawn: Spawn = .forward,
                           accuracy: UInt = 100,
-                          @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
+                          @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyle(shape: self,
                            innerContent: innerContent,
                            itemCount: itemCount,
@@ -77,7 +77,7 @@ public extension Shape {
                                     distribution: Distribution = .evenly,
                                     spawn: Spawn = .forward,
                                     accuracy: UInt = 100,
-                                    @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
+                                    @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyleWithCanvas(shape: self,
                                      innerContent: innerContent,
                                      itemCount: itemCount,

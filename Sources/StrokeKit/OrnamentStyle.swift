@@ -19,15 +19,15 @@ import simd
   }
 }
 
-public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: Ornamentable {
+public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: View {
   
   private let path: Path
   private let innerContent: (UInt, LayoutData) -> NewContent
 
-  private let traverser: PathTraversal<S, NewContent>
+  private let traverser: PathTraversal<S>
   
   public init(shape: S,
-              @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
+              @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
               itemCount: UInt = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,
@@ -65,7 +65,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
   private func drawView(content index: UInt, at point: CGPoint, angle: Angle, leftNormal: CGPoint) -> some View {
     
     innerContent(index, LayoutData(position: point, angle: angle, leftNormal: leftNormal))
-      .view
+      //.view
     
   }
   

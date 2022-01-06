@@ -9,12 +9,12 @@ import SwiftUI
 import CoreGraphics
 import simd
 
-public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: Ornamentable {
+public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: View {
   
   private let path: Path
   private let innerContent: (UInt, LayoutData) -> NewContent
   private let itemCount: UInt
-  private let traverser: PathTraversal<S, NewContent>
+  private let traverser: PathTraversal<S>
 
   public init(shape: S,
               @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
@@ -72,7 +72,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
       
       ForEach((0..<Int(self.itemCount))) { index in
         innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
-          .view
+          //.view
           .tag("ornament_\(index)")
           .frame(height: 100)
       }
