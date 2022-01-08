@@ -1,8 +1,10 @@
 //
-//  File.swift
-//  
+//  CGPoint+.swift
+//  StrokeExtensions
 //
-//  Created by Chris Davis on 30/12/2021.
+//  Copyright © 2022 Chris Davis, https://www.nthState.com
+//
+//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
 //
 
 import CoreGraphics

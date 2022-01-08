@@ -1,6 +1,27 @@
-# StrokeKit
+# StrokeExtensions
 
 Adorn your SwiftUI Shapes/Beziers with Ornaments
+
+
+
+
+
+```
+struct SwiftUIView: View {
+    var body: some View {
+      ZStack {
+        Curve()
+          .stroke(itemCount: 10, from: 0, spacing: 0, distribution: .evenly, spawn: .forward, accuracy: 100) { index, layout in
+            Circle()
+              .fill(Color.orange)
+              .frame(width: 10, height: 10)
+          }
+      }
+    }
+}
+```
+
+
 
 
 Draw content along a bezier
@@ -14,7 +35,7 @@ public extension Shape {
                           distribution: Distribution = .evenly,
                           spawn: Spawn = .forward,
                           accuracy: UInt = 100,
-                          @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
+                          @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyle(shape: self,
                            innerContent: innerContent,
                            itemCount: itemCount,
@@ -39,8 +60,9 @@ public extension Shape {
                                     spacing: CGFloat = 0,
                                     distribution: Distribution = .evenly,
                                     spawn: Spawn = .forward,
+                                    size: CGSize = CGSize(width: 40, height: 40),
                                     accuracy: UInt = 100,
-                                    @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : Ornamentable {
+                                    @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyleWithCanvas(shape: self,
                                      innerContent: innerContent,
                                      itemCount: itemCount,
@@ -48,6 +70,7 @@ public extension Shape {
                                      spacing: spacing,
                                      distribution: distribution,
                                      spawn: spawn,
+                                     size: size,
                                      accuracy: accuracy))
   }
   
@@ -56,6 +79,4 @@ public extension Shape {
 
 TODO
 
-- canvas
-- animate on add
 - backward has wrong shape on step

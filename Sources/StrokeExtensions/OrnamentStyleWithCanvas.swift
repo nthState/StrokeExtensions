@@ -1,8 +1,10 @@
 //
-//  File.swift
-//  
+//  OrnamentStyleWithCanvas.swift
+//  StrokeExtensions
 //
-//  Created by Chris Davis on 30/12/2021.
+//  Copyright © 2022 Chris Davis, https://www.nthState.com
+//
+//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
 //
 
 import SwiftUI
@@ -84,24 +86,12 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
       
       
     } symbols: {
-      
-      #warning("fix this")
-//      ForEach<Range<Int>, Int, ModifiedContent<ModifiedContent<_ConditionalContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<_ShapeView<Rectangle, Color>, _FrameLayout>, _OverlayModifier<_ShapeView<_StrokedShape<_Inset>, Color>>>, _RotationEffect>, _AnimationModifier<Bool>>, _AppearanceActionModifier>, ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<ModifiedContent<_ShapeView<Rectangle, Color>, _FrameLayout>, _OverlayModifier<_ShapeView<_StrokedShape<_Inset>, Color>>>, _RotationEffect>, _AnimationModifier<Bool>>, _AppearanceActionModifier>>, _TraitWritingModifier<TagValueTraitKey<String>>>, _FrameLayout>> count (4) != its initial count (3). `ForEach(_:content:)` should only be used for *constant* data. Instead conform data to `Identifiable` or use `ForEach(_:id:content:)` and provide an explicit `id`!
-      
+
       ForEach(((0..<Int(self.itemCount))), id: \.self) { index in
         innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
-          
-          //.view
           .tag("ornament_\(index)")
           .frame(width: self.size.width, height: self.size.height)
       }
-      
-//      ForEach((0..<Int(self.itemCount))) { index in
-//        innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
-//          //.view
-//          .tag("ornament_\(index)")
-//          .frame(height: 100)
-//      }
 
     }
     

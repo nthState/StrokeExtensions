@@ -1,3 +1,12 @@
+//
+//  StrokeExtensions.swift
+//  StrokeExtensions
+//
+//  Copyright © 2022 Chris Davis, https://www.nthState.com
+//
+//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
+//
+
 import SwiftUI
 
 // MARK: Shape Ornament Conent

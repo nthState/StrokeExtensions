@@ -1,4 +1,11 @@
-
+//
+//  SegmentSlicer.swift
+//  StrokeExtensions
+//
+//  Copyright © 2022 Chris Davis, https://www.nthState.com
+//
+//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
+//
 import Foundation
 import CoreGraphics
 
@@ -12,6 +19,14 @@ public enum PieceType {
 
 public struct Segment {
   let pieces: [Piece]
+}
+
+extension Segment: Equatable {
+  
+  public static func ==(lhs: Segment, rhs: Segment) -> Bool {
+    return lhs.pieces == rhs.pieces
+  }
+  
 }
 
 public struct Piece {
