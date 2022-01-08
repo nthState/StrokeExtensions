@@ -4,6 +4,10 @@ Adorn your SwiftUI Shapes/Beziers with Ornaments
 
 
 
+![Bunting SwiftUI](Docs/images/bunting.gif)
+
+
+![Text on curve SwiftUI](Docs/images/text_on_curve.gif)
 
 
 ```
@@ -35,16 +39,7 @@ public extension Shape {
                           distribution: Distribution = .evenly,
                           spawn: Spawn = .forward,
                           accuracy: UInt = 100,
-                          @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
-    modifier(OrnamentStyle(shape: self,
-                           innerContent: innerContent,
-                           itemCount: itemCount,
-                           from: from,
-                           spacing: spacing,
-                           distribution: distribution,
-                           spawn: spawn,
-                           accuracy: accuracy))
-  }
+                          @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {}
   
 }
 
@@ -62,17 +57,7 @@ public extension Shape {
                                     spawn: Spawn = .forward,
                                     size: CGSize = CGSize(width: 40, height: 40),
                                     accuracy: UInt = 100,
-                                    @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
-    modifier(OrnamentStyleWithCanvas(shape: self,
-                                     innerContent: innerContent,
-                                     itemCount: itemCount,
-                                     from: from,
-                                     spacing: spacing,
-                                     distribution: distribution,
-                                     spawn: spawn,
-                                     size: size,
-                                     accuracy: accuracy))
-  }
+                                    @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {}
   
 }
 ```
