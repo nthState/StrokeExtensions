@@ -9,43 +9,43 @@
 
 import SwiftUI
 
-// MARK: Shape Ornament Conent
-
-public protocol Ornamentable {
-  var id: UUID { get }
-  var view: AnyView { get }
-}
-
-public struct ShapeOrnament: Identifiable, Ornamentable {
-  public let id: UUID
-  public let view: AnyView
-}
-
-extension View {
-  
-  public func ornament(_ id: ShapeOrnament.ID) -> ShapeOrnament {
-    return ShapeOrnament(id: id,
-                        view: AnyView(self))
-  }
-  
-}
-
-@resultBuilder
-public struct ShapeContentBuilder {
-  
-  public static func buildBlock(_ components: ShapeOrnament) -> ShapeOrnament {
-    components
-  }
-
-  public static func buildEither(first component: ShapeOrnament) -> ShapeOrnament {
-    component
-  }
-  
-  public static func buildEither(second component: ShapeOrnament) -> ShapeOrnament {
-    component
-  }
-  
-}
+//// MARK: Shape Ornament Conent
+//
+//public protocol Ornamentable {
+//  var id: UUID { get }
+//  var view: AnyView { get }
+//}
+//
+//public struct ShapeOrnament: Identifiable, Ornamentable {
+//  public let id: UUID
+//  public let view: AnyView
+//}
+//
+//extension View {
+//
+//  public func ornament(_ id: ShapeOrnament.ID) -> ShapeOrnament {
+//    return ShapeOrnament(id: id,
+//                        view: AnyView(self))
+//  }
+//
+//}
+//
+//@resultBuilder
+//public struct ShapeContentBuilder {
+//
+//  public static func buildBlock(_ components: ShapeOrnament) -> ShapeOrnament {
+//    components
+//  }
+//
+//  public static func buildEither(first component: ShapeOrnament) -> ShapeOrnament {
+//    component
+//  }
+//
+//  public static func buildEither(second component: ShapeOrnament) -> ShapeOrnament {
+//    component
+//  }
+//
+//}
 
 public struct LayoutData {
   public let position: CGPoint
@@ -57,13 +57,13 @@ public struct LayoutData {
 
 public extension Shape {
   
-  func stroke<NewContent>(itemCount: UInt = 1,
+  func stroke<NewContent>(itemCount: Int = 1,
                           from: CGFloat = 0,
                           spacing: CGFloat = 0,
                           distribution: Distribution = .evenly,
                           spawn: Spawn = .forward,
                           accuracy: UInt = 100,
-                          @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
+                          @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyle(shape: self,
                            innerContent: innerContent,
                            itemCount: itemCount,
@@ -80,14 +80,14 @@ public extension Shape {
 
 public extension Shape {
   
-  func strokeWithCanvas<NewContent>(itemCount: UInt = 1,
+  func strokeWithCanvas<NewContent>(itemCount: Int = 1,
                                     from: CGFloat = 0,
                                     spacing: CGFloat = 0,
                                     distribution: Distribution = .evenly,
                                     spawn: Spawn = .forward,
                                     size: CGSize = CGSize(width: 40, height: 40),
                                     accuracy: UInt = 100,
-                                    @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent) -> some View where NewContent : View {
+                                    @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyleWithCanvas(shape: self,
                                      innerContent: innerContent,
                                      itemCount: itemCount,

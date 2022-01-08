@@ -15,9 +15,8 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
   
   private let shape: S
   private let path: Path
-  private let innerContent: (UInt, LayoutData) -> NewContent
-  private let itemCount: UInt
-  //private var traverser: PathTraversal<S>
+  private let innerContent: (Int, LayoutData) -> NewContent
+  private let itemCount: Int
   private let from: CGFloat
   private let spacing: CGFloat
   private let distribution: Distribution
@@ -26,8 +25,8 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
   private let size: CGSize
 
   public init(shape: S,
-              @ShapeContentBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
-              itemCount: UInt = 1,
+              @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent,
+              itemCount: Int = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
@@ -88,7 +87,7 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
     } symbols: {
 
       ForEach(((0..<Int(self.itemCount))), id: \.self) { index in
-        innerContent(UInt(index), LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
+        innerContent(index, LayoutData(position: .zero, angle: .zero, leftNormal: .zero))
           .tag("ornament_\(index)")
           .frame(width: self.size.width, height: self.size.height)
       }

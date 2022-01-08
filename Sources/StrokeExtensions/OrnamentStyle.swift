@@ -24,13 +24,13 @@ import simd
 public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: View {
   
   private let path: Path
-  private let innerContent: (UInt, LayoutData) -> NewContent
+  private let innerContent: (Int, LayoutData) -> NewContent
 
   private let traverser: PathTraversal<S>
   
   public init(shape: S,
-              @ViewBuilder innerContent: @escaping (UInt, LayoutData) -> NewContent,
-              itemCount: UInt = 1,
+              @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent,
+              itemCount: Int = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
@@ -41,7 +41,6 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
     self.innerContent = innerContent
     
     self.traverser = PathTraversal(shape: shape,
-                                   //innerContent: innerContent,
                                    itemCount: itemCount,
                                    from: from,
                                    spacing: spacing,
@@ -64,7 +63,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
     
   }
   
-  private func drawView(content index: UInt, at point: CGPoint, angle: Angle, leftNormal: CGPoint) -> some View {
+  private func drawView(content index: Int, at point: CGPoint, angle: Angle, leftNormal: CGPoint) -> some View {
     
     innerContent(index, LayoutData(position: point, angle: angle, leftNormal: leftNormal))
       //.view
@@ -80,15 +79,15 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
       case .move(to: let point):
         break
       case .line(to: let point):
-        let view = AnyView(drawView(content: UInt(data.index), at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
+        let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))
       case .curve(to: let point, control1: let control1, control2: let control2):
-        let view = AnyView(drawView(content: UInt(data.index), at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
+        let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))
       case .quadCurve(to: let point, control: let control):
         break
       case .closeSubpath:
-        let view = AnyView(drawView(content: UInt(data.index), at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
+        let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))
       }
     })

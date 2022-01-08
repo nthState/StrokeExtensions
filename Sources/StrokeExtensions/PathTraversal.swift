@@ -21,7 +21,7 @@ public class PathTraversal<S> where S: Shape {
   
   private let path: Path
   
-  private let itemCount: UInt
+  private let itemCount: Int
   private let from: CGFloat
   private let spacing: CGFloat
   private let distribution: Distribution
@@ -39,13 +39,14 @@ public class PathTraversal<S> where S: Shape {
   private var _segments: [Segment] = []
   
   public init(shape: S,
-              itemCount: UInt = 1,
+              itemCount: Int = 1,
               from: CGFloat = 0,
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
               spawn: Spawn = .forward,
               accuracy: UInt = 100) {
     
+    precondition(itemCount >= 0, "itemCount must be positive")
     precondition(from >= 0 && from <= 1, "From must be a percentage in range 0.0 to 1.0")
     
     self.path = shape.path(in: CGRect.unit)
@@ -215,7 +216,7 @@ public extension PathTraversal {
       case .curve(to: let point, control1: let control1, control2: let control2):
         
         //let curveLength = bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
-        let arcLengths = bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
+        let arcLengths = Bezier.bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
 
         let segment = self._segments[segmentCounter]
         
@@ -226,10 +227,10 @@ public extension PathTraversal {
             continue
           }
           
-          let e = bezier_evenlyDistributed(u: piece.start - CGFloat(segmentCounter), arcLengths: arcLengths)
+          let e = Bezier.bezier_evenlyDistributed(u: piece.start - CGFloat(segmentCounter), arcLengths: arcLengths)
           
-          let x = _bezier_point_x(t: e, a: lastPoint, b: control1, c: control2, d: point)
-          let y = _bezier_point_y(t: e, a: lastPoint, b: control1, c: control2, d: point)
+          let x = Bezier.bezier_point_x(t: e, a: lastPoint, b: control1, c: control2, d: point)
+          let y = Bezier.bezier_point_y(t: e, a: lastPoint, b: control1, c: control2, d: point)
 
           let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
 

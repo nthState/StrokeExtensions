@@ -39,7 +39,7 @@ extension Path {
         lastPoint = point
       case .curve(to: let point, control1: let control1, control2: let control2):
         
-        accumulatedLength += bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: accuracy)
+        accumulatedLength += Bezier.bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: accuracy)
         
         segments += 1
         lastPoint = point
