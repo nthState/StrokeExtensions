@@ -1,0 +1,53 @@
+@Tutorial() {
+  @Intro(title: "Getting Started with MaskedBlur in SwiftUI") {
+    In this tutorial, I'll show you how to integrate PathWarp
+    into your SwiftUI project to warp some shapes!
+    
+    @Image(source: file, alt: "accessible description")
+  }
+  
+  @Section(title: "Warping a Rectangle") {
+    @ContentAndMedia {
+      Let's get started with a Rectangle
+      
+      @Image(source: file, alt: "accessible description")
+    }
+    
+    @Steps {
+      @Step {
+        Start of with a simple view, this one displays a Rectangle with a red border
+        
+        @Code(name: "Rectangle Warp", file: "01_RectangleWarp.swift") {
+          @Image(source: "01_RectangleWarp.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Import the ``PathWarp`` Swift Package
+        
+        @Code(name: "Rectangle Warp", file: "02_RectangleWarp.swift") {
+          @Image(source: "02_RectangleWarp.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Apply a warp to the shape
+        
+        We set amount to a low number, so the x/y values will be in the range -10 to 10.
+        The seed was randomly selected until the shape looks how I wanted it
+        
+        @Code(name: "Rectangle Warp", file: "03_RectangleWarp.swift") {
+          @Image(source: file, alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        The same warp with amount with a different seed looks different
+        
+        @Code(name: "Rectangle Warp", file: "04_RectangleWarp.swift") {
+          
+        }
+      }
+    }
+  }
+}
