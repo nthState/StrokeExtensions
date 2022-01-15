@@ -76,15 +76,16 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
     
     traverser.traverse(callback: { element, data in
       switch element {
-      case .move(to: let point):
+      case .move(to: _):
         break
-      case .line(to: let point):
+      case .line(to: _):
         let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))
-      case .curve(to: let point, control1: let control1, control2: let control2):
+      case .curve(to: _, control1: _, control2: _):
         let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))
-      case .quadCurve(to: let point, control: let control):
+      case .quadCurve(to: _, control: _):
+        #warning("to fix")
         break
       case .closeSubpath:
         let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))

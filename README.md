@@ -2,7 +2,7 @@
 
 Adorn your SwiftUI Shapes/Beziers with Ornaments
 
-
+This is a pure SwiftUI extension to add views along curves
 
 ![Bunting SwiftUI](Docs/images/bunting.gif)
 
@@ -11,21 +11,58 @@ Adorn your SwiftUI Shapes/Beziers with Ornaments
 
 
 ```
+import StrokeExtensions
+
 struct SwiftUIView: View {
     var body: some View {
-      ZStack {
-        Curve()
+        MyShape()
           .stroke(itemCount: 10, from: 0, spacing: 0, distribution: .evenly, spawn: .forward, accuracy: 100) { index, layout in
+          
+            let scaled = layout.position * CGSize(width: 100, height: 100)
+          
             Circle()
               .fill(Color.orange)
               .frame(width: 10, height: 10)
+              .offset(x: scaled.x/2, y: scaled.y/2)
+              .position(x: scaled.x/2, y: scaled.y/2)
           }
-      }
+         .background(Color.red)
+         .frame(width: 100, height: 100)
     }
 }
 ```
 
+## Text along a curve
 
+```
+import StrokeExtensions
+
+struct SwiftUIView: View {
+    var body: some View {
+      MyShape()
+        .stroke(itemCount: 10, spacing: 0.1, distribution: .continuous) { index, layout in
+          
+          let scaled = layout.position * CGSize(width: 100, height: 100)
+          
+          if let character = getCharacter("Chris Davis", at: index) {
+            
+            Text(character)
+              .scaleEffect(layout.leftNormal.y < 0 ? -1 : 1)
+              .rotationEffect(layout.angle)
+              .offset(x: scaled.x/2, y: scaled.y/2)
+              .offset(y: 5)
+              .position(x: scaled.x/2, y: scaled.y/2)
+            
+          } else {
+            EmptyView()
+          }
+
+          }
+         .background(Color.red)
+        .frame(width: 100, height: 100)
+  }
+}
+```
 
 
 Draw content along a bezier

@@ -70,13 +70,13 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
 
       traverser.traverse(callback: { element, data in
         switch element {
-        case .move(to: let point):
+        case .move(to: _):
           break
-        case .line(to: let point):
+        case .line(to: _):
           drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal)
-        case .curve(to: let point, control1: let control1, control2: let control2):
+        case .curve(to: _, control1: _, control2: _):
           drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal)
-        case .quadCurve(to: let point, control: let control):
+        case .quadCurve(to: _, control: _):
           break
         case .closeSubpath:
           drawSymbol(resolvedSymbol: resolved[data.index], on: context, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal)

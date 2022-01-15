@@ -12,11 +12,6 @@ import CoreGraphics
 import SwiftUI
 import simd
 
-//private enum PathType {
-//  case spacer(distance: CGFloat)
-//  case shape
-//}
-
 public class PathTraversal<S> where S: Shape {
   
   private let path: Path
@@ -35,7 +30,6 @@ public class PathTraversal<S> where S: Shape {
   
   private var _startDistance: CGFloat = 0
   
-  //private var _items: [PathType] = []
   private var _segments: [Segment] = []
   
   public init(shape: S,
@@ -250,6 +244,7 @@ public extension PathTraversal {
           tempLast = CGPoint(x: x, y: y)
         }
         
+        lastPoint = point
         segmentCounter += 1
       case .quadCurve(to: let point, control: _):
 #warning("UNIMPLEMENTED - Chris to add")

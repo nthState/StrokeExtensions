@@ -9,10 +9,10 @@
 
 import CoreGraphics
 
-extension CGRect {
+internal extension CGRect {
   
   /// Creates a unit CGRect of size: 1x1
-  public static var unit: CGRect {
+  static var unit: CGRect {
     CGRect(origin: .zero, size: CGSize(width: 1, height: 1))
   }
   

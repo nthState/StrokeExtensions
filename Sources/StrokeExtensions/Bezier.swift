@@ -10,7 +10,7 @@
 import Foundation
 import CoreGraphics
 
-class Bezier {
+internal class Bezier {
   
   class func bezier_point(t: CGFloat,  start: CGFloat,  control_1: CGFloat, control_2: CGFloat, finish: CGFloat) -> CGFloat {
     return              start * (1.0 - t) * (1.0 - t)  * (1.0 - t)

@@ -10,7 +10,7 @@
 import CoreGraphics
 import SwiftUI
 
-extension Path {
+internal extension Path {
   
   /// Total length of the path and how many segments it contains
   func totalLengthAndSegments(accuracy: UInt = 100) -> (length: CGFloat, segments: UInt) {

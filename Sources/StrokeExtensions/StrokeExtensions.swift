@@ -47,9 +47,13 @@ import SwiftUI
 //
 //}
 
+/// Provided for each point on the path
 public struct LayoutData {
+  /// Position along the path
   public let position: CGPoint
+  /// Rotation angle based on previous point
   public let angle: Angle
+  /// Normal to the point on the line, useful for knowing if the line is pointing inwards or outwards
   public let leftNormal: CGPoint
 }
 
@@ -108,9 +112,9 @@ public enum Distribution {
   case continuous
 }
 
-extension Distribution {
+public extension Distribution {
   
-  public var description: String {
+  var description: String {
     switch self {
     case .evenly:
       return "Evenly"
@@ -128,9 +132,9 @@ public enum Spawn {
   case backward
 }
 
-extension Spawn {
+public extension Spawn {
   
-  public var description: String {
+  var description: String {
     switch self {
     case .forward:
       return "Forward"

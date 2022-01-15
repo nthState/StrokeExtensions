@@ -11,14 +11,18 @@ import CoreGraphics
 
 public extension CGPoint {
   
-  static func * (point: CGPoint, size: CGFloat) -> CGPoint {
-    return CGPoint(x: point.x * size, y: point.y * size)
-  }
-  
   static func * (point: CGPoint, size: CGSize) -> CGPoint {
     return CGPoint(x: point.x * size.width, y: point.y * size.height)
   }
   
+}
+
+internal extension CGPoint {
+  
+  static func * (point: CGPoint, size: CGFloat) -> CGPoint {
+    return CGPoint(x: point.x * size, y: point.y * size)
+  }
+
   static func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
   }

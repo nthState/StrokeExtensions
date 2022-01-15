@@ -7,7 +7,6 @@
 //  See https://github.com/nthState/StrokeExtensions/blob/main/LICENSE for license information.
 //
 
-import Foundation
 import SwiftUI
 
 /// 90 degree corner curve
