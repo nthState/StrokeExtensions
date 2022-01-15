@@ -1,5 +1,5 @@
 //
-//  BuntingSwiftUIView.swift
+//  CanvasSwiftUIView.swift
 //  StrokeExtensions
 //
 //  Copyright © 2022 Chris Davis, https://www.nthState.com
@@ -9,14 +9,13 @@
 
 import SwiftUI
 
-struct BuntingSwiftUIView {
+struct CanvasSwiftUIView {
   @State var isAnimating = false
   @State var numberOfOrnaments: Int = 3
   @State var offset: CGFloat = 0
   @State var spacing: CGFloat = 0.1
   @State var distribution: Distribution = .continuous
   @State var spawn: Spawn = .forward
-  @State var useNormal: Bool = true
   
   var intProxy: Binding<Double>{
     Binding<Double>(get: {
@@ -27,11 +26,11 @@ struct BuntingSwiftUIView {
   }
 }
 
-extension BuntingSwiftUIView: View {
+extension CanvasSwiftUIView: View {
   
   var body: some View {
-    VStack(spacing: 24) {
-      Text("Bunting Example")
+    VStack {
+      Text("Canvas Example")
       curve
       controls
     }
@@ -40,39 +39,24 @@ extension BuntingSwiftUIView: View {
   var curve: some View {
     ZStack {
       
-      Bunting()
+      Curve()
         .stroke(Color.red, lineWidth: 1)
         .frame(width: 100, height: 100)
       
-      Bunting()
-        .stroke(itemCount: numberOfOrnaments, from: offset, spacing: spacing, distribution: distribution, spawn: spawn) { item, layout in
-          
-          let scaled = layout.position * CGSize(width: 100, height: 100)
+      Curve()
+        .strokeWithCanvas(itemCount: numberOfOrnaments, from: offset, spacing: spacing, distribution: distribution, spawn: spawn, size: CGSize(width: 100, height: 100)) { item, _ in
           
           if item % 2 == 0 {
             
-            Triangle()
-              .fill(Color.green)
-              .frame(width: 10, height: 10, alignment: .center)
-              .rotationEffect(Angle(degrees: self.isAnimating ? 360.0 : 0.0))
-              .scaleEffect(useNormal ? (layout.leftNormal.y < 0 ? -1 : 1) : 1)
-              .scaleEffect(-1)
-              .rotationEffect(layout.angle)
-              .offset(x: scaled.x/2, y: scaled.y/2)
-              .offset(y: 5)
-              .position(x: scaled.x/2, y: scaled.y/2)
+            Circle()
+              .fill(Color.blue)
+              .frame(width: 10, height: 10)
             
           } else {
             
-            Rectangle()
-              .fill(Color.blue)
-              .frame(width: 5, height: 5, alignment: .center)
-              .border(Color.black, width: 1)
-              .rotationEffect(Angle(degrees: self.isAnimating ? 360.0 : 0.0))
-              .rotationEffect(layout.angle)
-              .position(scaled)
-//              .offset(x: scaled.x/2, y: scaled.y/2)
-//              .position(x: scaled.x/2, y: scaled.y/2)
+            Circle()
+              .fill(Color.red)
+              .frame(width: 20, height: 20)
             
           }
           
@@ -87,7 +71,7 @@ extension BuntingSwiftUIView: View {
     VStack {
       
       HStack {
-        Text("Flags")
+        Text("Ornaments")
         Slider(value: intProxy, in: 0...30.0)
         TextField("", value: $numberOfOrnaments, formatter: NumberFormatter())
       }
@@ -102,10 +86,6 @@ extension BuntingSwiftUIView: View {
         Text("Spacing")
         Slider(value: $spacing, in: 0...1)
         TextField("", value: $spacing, formatter: NumberFormatter())
-      }
-      
-      HStack {
-        Toggle("Use Normal", isOn: $useNormal)
       }
       
       HStack {
@@ -141,8 +121,8 @@ extension BuntingSwiftUIView: View {
   
 }
 
-struct BuntingSwiftUIView_Previews: PreviewProvider {
+struct CanvasSwiftUIView_Previews: PreviewProvider {
   static var previews: some View {
-    BuntingSwiftUIView()
+    CanvasSwiftUIView()
   }
 }

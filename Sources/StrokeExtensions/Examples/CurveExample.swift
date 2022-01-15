@@ -30,6 +30,7 @@ extension CurveSwiftUIView: View {
   
   var body: some View {
     VStack {
+      Text("Single Curve Example")
       curve
       controls
     }

@@ -36,6 +36,7 @@ struct TextOnCurveSwiftUIView {
 extension TextOnCurveSwiftUIView: View {
   var body: some View {
     VStack(spacing: 24) {
+      Text("Text Example")
       curve
       controls
     }
