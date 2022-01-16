@@ -72,18 +72,21 @@ extension CanvasSwiftUIView: View {
       
       HStack {
         Text("Ornaments")
+          .frame(width: 100, alignment: .leading)
         Slider(value: intProxy, in: 0...30.0)
         TextField("", value: $numberOfOrnaments, formatter: NumberFormatter())
       }
       
       HStack {
         Text("From")
+          .frame(width: 100, alignment: .leading)
         Slider(value: $offset, in: 0...1)
         TextField("", value: $offset, formatter: NumberFormatter())
       }
       
       HStack {
         Text("Spacing")
+          .frame(width: 100, alignment: .leading)
         Slider(value: $spacing, in: 0...1)
         TextField("", value: $spacing, formatter: NumberFormatter())
       }
@@ -117,6 +120,9 @@ extension CanvasSwiftUIView: View {
         
       }
     }
+    .padding()
+    .background(Color.blue.opacity(0.1))
+    .cornerRadius(50)
   }
   
 }

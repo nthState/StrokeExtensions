@@ -209,7 +209,6 @@ public extension PathTraversal {
         segmentCounter += 1
       case .curve(to: let point, control1: let control1, control2: let control2):
         
-        //let curveLength = bezier_length(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
         let arcLengths = Bezier.bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
 
         let segment = self._segments[segmentCounter]
@@ -246,11 +245,43 @@ public extension PathTraversal {
         
         lastPoint = point
         segmentCounter += 1
-      case .quadCurve(to: let point, control: _):
-#warning("UNIMPLEMENTED - Chris to add")
+      case .quadCurve(to: let point, control: let control):
+
+        let arcLengths = Bezier.bezier_arcLengths(start: lastPoint, p1: control, p2: control, finish: point, accuracy: self.accuracy)
+
+        let segment = self._segments[segmentCounter]
+        
+        var tempLast = lastPoint
+        for piece in segment.pieces {
+          
+          guard piece.type == .shape else {
+            continue
+          }
+          
+          let e = Bezier.bezier_evenlyDistributed(u: piece.start - CGFloat(segmentCounter), arcLengths: arcLengths)
+          
+          let x = Bezier.bezier_point_x(t: e, a: lastPoint, b: control, c: control, d: point)
+          let y = Bezier.bezier_point_y(t: e, a: lastPoint, b: control, c: control, d: point)
+
+          let angleInDegrees = tempLast.angle(between: CGPoint(x: x, y: y))
+
+          let newPoint = CGPoint(x: x, y: y) //* size
+
+          
+
+          guard viewIndex < itemCount else {
+            return
+          }
+          
+          let leftNormal = (newPoint - tempLast).normalize().rotateLeft() * 10
+
+          callback(.quadCurve(to: point, control: control), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
+          index += 1
+          viewIndex += 1
+          tempLast = CGPoint(x: x, y: y)
+        }
+        
         lastPoint = point
-        index += 1
-        viewIndex += 1
         segmentCounter += 1
       case .closeSubpath:
         

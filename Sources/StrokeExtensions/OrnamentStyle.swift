@@ -11,7 +11,7 @@ import SwiftUI
 import CoreGraphics
 import simd
 
- struct ViewItem: Identifiable {
+internal struct ViewItem: Identifiable {
   let id: Int
   let view: AnyView
   
@@ -66,8 +66,6 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
   private func drawView(content index: Int, at point: CGPoint, angle: Angle, leftNormal: CGPoint) -> some View {
     
     innerContent(index, LayoutData(position: point, angle: angle, leftNormal: leftNormal))
-      //.view
-    
   }
   
   func buildAubViews(content: Content) -> [ViewItem] {
@@ -85,8 +83,8 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
         let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))
       case .quadCurve(to: _, control: _):
-        #warning("to fix")
-        break
+        let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
+        views.append(ViewItem(id: data.index, view: view))
       case .closeSubpath:
         let view = AnyView(drawView(content: data.index, at: data.newPoint, angle: data.angle, leftNormal: data.leftNormal))
         views.append(ViewItem(id: data.index, view: view))

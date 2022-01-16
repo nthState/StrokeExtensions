@@ -43,7 +43,9 @@ internal extension Path {
         
         segments += 1
         lastPoint = point
-      case .quadCurve(to: let point, control: _):
+      case .quadCurve(to: let point, control: let control):
+        
+        accumulatedLength += Bezier.bezier_length(start: lastPoint, p1: control, p2: control, finish: point, accuracy: accuracy)
         
         segments += 1
         lastPoint = point
