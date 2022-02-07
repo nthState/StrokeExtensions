@@ -34,7 +34,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
               from: CGFloat = 0,
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
-              spawn: Spawn = .forward,
+              direction: Direction = .forward,
               accuracy: UInt = 100) {
     
     self.path = shape.path(in: CGRect.unit)
@@ -45,7 +45,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
                                    from: from,
                                    spacing: spacing,
                                    distribution: distribution,
-                                   spawn: spawn,
+                                   direction: direction,
                                    accuracy: accuracy)
   }
   

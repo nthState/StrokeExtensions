@@ -15,7 +15,7 @@ struct CurveSwiftUIView {
   @State var offset: CGFloat = 0
   @State var spacing: CGFloat = 0.1
   @State var distribution: Distribution = .continuous
-  @State var spawn: Spawn = .forward
+  @State var direction: Direction = .forward
   
   var intProxy: Binding<Double>{
     Binding<Double>(get: {
@@ -44,7 +44,7 @@ extension CurveSwiftUIView: View {
         .frame(width: 100, height: 100)
       
       Curve()
-        .stroke(itemCount: numberOfOrnaments, from: offset, spacing: spacing, distribution: distribution, spawn: spawn) { item, layout in
+        .stroke(itemCount: numberOfOrnaments, from: offset, spacing: spacing, distribution: distribution, direction: direction) { item, layout in
           
           let scaled = layout.position * CGSize(width: 100, height: 100)
           
@@ -112,14 +112,14 @@ extension CurveSwiftUIView: View {
         .background(Color.green)
         
         Button {
-          switch spawn {
+          switch direction {
           case .forward:
-            spawn = .backward
+            direction = .backward
           case .backward:
-            spawn = .forward
+            direction = .forward
           }
         } label: {
-          Text("Spawn: \(spawn.description)")
+          Text("Direction: \(direction.description)")
         }
         .padding()
         .background(Color.green)

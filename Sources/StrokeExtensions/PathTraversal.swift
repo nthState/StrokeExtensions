@@ -12,7 +12,7 @@ import CoreGraphics
 import SwiftUI
 import simd
 
-public class PathTraversal<S> where S: Shape {
+internal class PathTraversal<S> where S: Shape {
   
   private let path: Path
   
@@ -20,9 +20,10 @@ public class PathTraversal<S> where S: Shape {
   private let from: CGFloat
   private let spacing: CGFloat
   private let distribution: Distribution
-  private let spawn: Spawn
+  private let direction: Direction
   private let accuracy: UInt
   
+  /// We're doing some dividing later on, add a small amount so we don't get division by zero errors
   private let divisionByZeroMin: CGFloat = 0.0001
   
   private let _totalLength: CGFloat
@@ -37,19 +38,18 @@ public class PathTraversal<S> where S: Shape {
               from: CGFloat = 0,
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
-              spawn: Spawn = .forward,
+              direction: Direction = .forward,
               accuracy: UInt = 100) {
     
-    precondition(itemCount >= 0, "itemCount must be positive")
-    precondition(from >= 0 && from <= 1, "From must be a percentage in range 0.0 to 1.0")
+    precondition(itemCount >= 0, "`itemCount` must be positive")
+    precondition(from >= 0 && from <= 1, "`from` must be a percentage in range 0.0 to 1.0")
     
     self.path = shape.path(in: CGRect.unit)
-    
     
     self.spacing = spacing
     self.from = from
     self.distribution = distribution
-    self.spawn = spawn
+    self.direction = direction
     self.accuracy = accuracy
     self.itemCount = itemCount
     
@@ -63,7 +63,7 @@ public class PathTraversal<S> where S: Shape {
     
     self._startDistance = self._totalLength * from
     
-    switch spawn {
+    switch direction {
     case .forward:
       self._segments = forward(pathSegments: pathSegments)
     case .backward:
@@ -76,7 +76,7 @@ public class PathTraversal<S> where S: Shape {
 
 // MARK: Layout
 
-public extension PathTraversal {
+extension PathTraversal {
   
   private func forward(pathSegments: [Piece]) -> [Segment] {
     
@@ -140,7 +140,7 @@ public extension PathTraversal {
 
 // MARK: Traverse
 
-public extension PathTraversal {
+extension PathTraversal {
   
   typealias event = (Path.Element, Item) -> ()
   

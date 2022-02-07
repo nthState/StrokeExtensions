@@ -16,7 +16,7 @@ import StrokeExtensions
 struct SwiftUIView: View {
     var body: some View {
         MyShape()
-          .stroke(itemCount: 10, from: 0, spacing: 0, distribution: .evenly, spawn: .forward, accuracy: 100) { index, layout in
+          .stroke(itemCount: 10, from: 0, spacing: 0, distribution: .evenly, direction: .forward, accuracy: 100) { index, layout in
           
             let scaled = layout.position * CGSize(width: 100, height: 100)
           
@@ -74,7 +74,7 @@ public extension Shape {
                           from: CGFloat = 0,
                           spacing: CGFloat = 0,
                           distribution: Distribution = .evenly,
-                          spawn: Spawn = .forward,
+                          direction: Direction = .forward,
                           accuracy: UInt = 100,
                           @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent) -> some View where NewContent : View {}
   
@@ -91,7 +91,7 @@ public extension Shape {
                                     from: CGFloat = 0,
                                     spacing: CGFloat = 0,
                                     distribution: Distribution = .evenly,
-                                    spawn: Spawn = .forward,
+                                    direction: Direction = .forward,
                                     size: CGSize = CGSize(width: 40, height: 40),
                                     accuracy: UInt = 100,
                                     @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent) -> some View where NewContent : View {}

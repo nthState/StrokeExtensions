@@ -1,21 +1,24 @@
 @Tutorials(name: "aa") {
-    @Intro(title: "Guides") {
-        text
+    @Intro(title: "Working with StrokeExtensions") {
+        A collection of Getting Started Guides working with Stroke Extensions for SwiftUI.
         
-        //@Image(source: file, alt: "accessible description")
     }
     
     @Chapter(name: "Getting Started") {
-        getting started
-        
-        //@Image(source: file, alt: "accessible description")
-        
-        @TutorialReference(tutorial: "doc:Getting-Started-with-PathWarp")
+        Get Started using Stroke Extensions to put a View on a Shape
+
+        @TutorialReference(tutorial: "doc:Getting-Started-with-StrokeExtensions")
     }
     
-    @Chapter(name: "Developer Diary") {
-       ssssss
-        
-        @TutorialReference(tutorial: "doc:Developer-Diary")
+    @Chapter(name: "Getting Started with Mixed Content") {
+        Use the parameters passed to the ViewBuilder to control your Content
+
+        @TutorialReference(tutorial: "doc:Getting-Started-with-Mixed-Content")
+    }
+    
+    @Chapter(name: "Getting Started with Text") {
+        Use the `normal` to control how Text is drawn
+
+        @TutorialReference(tutorial: "doc:Getting-Started-with-Text")
     }
 }

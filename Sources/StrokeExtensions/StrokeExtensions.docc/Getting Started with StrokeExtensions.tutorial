@@ -17,37 +17,19 @@
       @Step {
         Start of with a simple view, this one displays a Rectangle with a red border
         
-        @Code(name: "Rectangle Warp", file: "01_RectangleWarp.swift") {
-          @Image(source: "01_RectangleWarp.png", alt: "accessible description")
+        @Code(name: "Stroke.swift", file: "01_Stroke.swift") {
+          @Image(source: "01_Stroke.png", alt: "accessible description")
         }
       }
       
       @Step {
         Import the ``PathWarp`` Swift Package
         
-        @Code(name: "Rectangle Warp", file: "02_RectangleWarp.swift") {
-          @Image(source: "02_RectangleWarp.png", alt: "accessible description")
+        @Code(name: "Stroke.swift", file: "02_Stroke.swift") {
+          @Image(source: "02_Stroke.png", alt: "accessible description")
         }
       }
-      
-      @Step {
-        Apply a warp to the shape
-        
-        We set amount to a low number, so the x/y values will be in the range -10 to 10.
-        The seed was randomly selected until the shape looks how I wanted it
-        
-        @Code(name: "Rectangle Warp", file: "03_RectangleWarp.swift") {
-          @Image(source: file, alt: "accessible description")
-        }
-      }
-      
-      @Step {
-        The same warp with amount with a different seed looks different
-        
-        @Code(name: "Rectangle Warp", file: "04_RectangleWarp.swift") {
-          
-        }
-      }
+
     }
   }
 }

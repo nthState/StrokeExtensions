@@ -9,44 +9,6 @@
 
 import SwiftUI
 
-//// MARK: Shape Ornament Conent
-//
-//public protocol Ornamentable {
-//  var id: UUID { get }
-//  var view: AnyView { get }
-//}
-//
-//public struct ShapeOrnament: Identifiable, Ornamentable {
-//  public let id: UUID
-//  public let view: AnyView
-//}
-//
-//extension View {
-//
-//  public func ornament(_ id: ShapeOrnament.ID) -> ShapeOrnament {
-//    return ShapeOrnament(id: id,
-//                        view: AnyView(self))
-//  }
-//
-//}
-//
-//@resultBuilder
-//public struct ShapeContentBuilder {
-//
-//  public static func buildBlock(_ components: ShapeOrnament) -> ShapeOrnament {
-//    components
-//  }
-//
-//  public static func buildEither(first component: ShapeOrnament) -> ShapeOrnament {
-//    component
-//  }
-//
-//  public static func buildEither(second component: ShapeOrnament) -> ShapeOrnament {
-//    component
-//  }
-//
-//}
-
 /// Provided for each point on the path
 public struct LayoutData {
   /// Position along the path
@@ -61,11 +23,24 @@ public struct LayoutData {
 
 public extension Shape {
   
+  /**
+   Stroke the path with Views
+   
+   - Parameter itemCount: How many items you want along the path
+   - Parameter from: Percentage along the shape where the first item spawns
+   - Parameter spacing: Amount of space between each item
+   - Parameter distribution: Are the items spaced using the spacing, or spread out evenly?
+   - Parameter direction: Place items forward or backward on the path
+   - Parameter accuracy: Used for calculating ArcLengths, bump up only if required
+   - Parameter innerContent: The content to be used for each item
+   
+   - Returns: View
+   */
   func stroke<NewContent>(itemCount: Int = 1,
                           from: CGFloat = 0,
                           spacing: CGFloat = 0,
                           distribution: Distribution = .evenly,
-                          spawn: Spawn = .forward,
+                          direction: Direction = .forward,
                           accuracy: UInt = 100,
                           @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent) -> some View where NewContent : View {
     modifier(OrnamentStyle(shape: self,
@@ -74,7 +49,7 @@ public extension Shape {
                            from: from,
                            spacing: spacing,
                            distribution: distribution,
-                           spawn: spawn,
+                           direction: direction,
                            accuracy: accuracy))
   }
   
@@ -88,7 +63,7 @@ public extension Shape {
                                     from: CGFloat = 0,
                                     spacing: CGFloat = 0,
                                     distribution: Distribution = .evenly,
-                                    spawn: Spawn = .forward,
+                                    direction: Direction = .forward,
                                     size: CGSize = CGSize(width: 40, height: 40),
                                     accuracy: UInt = 100,
                                     @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent) -> some View where NewContent : View {
@@ -98,7 +73,7 @@ public extension Shape {
                                      from: from,
                                      spacing: spacing,
                                      distribution: distribution,
-                                     spawn: spawn,
+                                     direction: direction,
                                      size: size,
                                      accuracy: accuracy))
   }
@@ -107,19 +82,26 @@ public extension Shape {
 
 // MARK: Distribution
 
+/**
+ Where View's are spaced on the path
+ 
+ If you pick evenly, then Views are spaced based on pathLength/itemCount
+ 
+ If you pick continuous, Views are spaced via the `spacing`
+ */
 public enum Distribution {
   case evenly
   case continuous
 }
 
-public extension Distribution {
+extension Distribution {
   
   var description: String {
     switch self {
     case .evenly:
       return "Evenly"
     case .continuous:
-      return "From Start"
+      return "Continuous"
     }
   }
   
@@ -127,19 +109,22 @@ public extension Distribution {
 
 // MARK: Spawn
 
-public enum Spawn {
+/**
+ The direction in which views are created on the path
+ */
+public enum Direction {
   case forward
   case backward
 }
 
-public extension Spawn {
+extension Direction {
   
   var description: String {
     switch self {
     case .forward:
-      return "Forward"
+      return "Going Forward"
     case .backward:
-      return "Backward"
+      return "Going Backward"
     }
   }
   

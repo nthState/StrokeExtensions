@@ -62,7 +62,7 @@ internal class Bezier {
     var oy:CGFloat = Bezier.bezier_point_y (t: 0, a: start, b: p1, c: p2, d: finish);
     
     var arcLengths: [CGFloat] = []
-    //arcLengths.append(0)
+
     for item in stride(from: by, to: 1, by: by) {
       let x = Bezier.bezier_point_x (t: item, a: start, b: p1, c: p2, d: finish)
       let y = Bezier.bezier_point_y (t: item, a: start, b: p1, c: p2, d: finish)

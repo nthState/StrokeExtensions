@@ -11,6 +11,11 @@ import SwiftUI
 import CoreGraphics
 import simd
 
+/**
+ Prefer using OrnamentStyle over OrnamentStyleWithCanvas.
+ 
+ OrnamentStyleWithCanvas is a test to see how one could get the stroke extensions working with `Canvas`
+ */
 public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: View {
   
   private let shape: S
@@ -20,9 +25,11 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
   private let from: CGFloat
   private let spacing: CGFloat
   private let distribution: Distribution
-  private let spawn: Spawn
+  private let direction: Direction
   private let accuracy: UInt
   private let size: CGSize
+  private let opaque: Bool
+  private let colorMode: ColorRenderingMode
 
   public init(shape: S,
               @ViewBuilder innerContent: @escaping (Int, LayoutData) -> NewContent,
@@ -30,8 +37,10 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
               from: CGFloat = 0,
               spacing: CGFloat = 0,
               distribution: Distribution = .evenly,
-              spawn: Spawn = .forward,
+              direction: Direction = .forward,
               size: CGSize = CGSize(width: 40, height: 40),
+              opaque: Bool = false,
+              colorMode: ColorRenderingMode = .linear,
               accuracy: UInt = 100) {
     
     self.shape = shape
@@ -41,23 +50,24 @@ public struct OrnamentStyleWithCanvas<S, NewContent>: ViewModifier, ShapeStyle w
     self.from = from
     self.spacing = spacing
     self.distribution = distribution
-    self.spawn = spawn
+    self.direction = direction
     self.accuracy = accuracy
     self.size = size
+    self.opaque = opaque
+    self.colorMode = colorMode
   }
   
   public func body(content: Content) -> some View {
     
     let traverser = PathTraversal(shape: self.shape,
-                                   //innerContent: innerContent,
                                    itemCount: self.itemCount,
                                    from: self.from,
                                    spacing: self.spacing,
                                    distribution: self.distribution,
-                                   spawn: self.spawn,
+                                   direction: self.direction,
                                    accuracy: self.accuracy)
     
-    return Canvas(opaque: false, colorMode: .linear, rendersAsynchronously: true) { context, size in
+    return Canvas(opaque: opaque, colorMode: colorMode, rendersAsynchronously: true) { context, size in
       
       var resolved: [GraphicsContext.ResolvedSymbol] = []
 

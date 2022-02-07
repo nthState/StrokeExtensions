@@ -11,25 +11,25 @@ import CoreGraphics
 
 // MARK: Segment Type
 
-public enum PieceType {
+internal enum PieceType {
   case unknown
   case space
   case shape
 }
 
-public struct Segment {
+internal struct Segment {
   let pieces: [Piece]
 }
 
 extension Segment: Equatable {
   
-  public static func ==(lhs: Segment, rhs: Segment) -> Bool {
+  static func ==(lhs: Segment, rhs: Segment) -> Bool {
     return lhs.pieces == rhs.pieces
   }
   
 }
 
-public struct Piece {
+internal struct Piece {
   let start: CGFloat
   let finish: CGFloat
   let type: PieceType
@@ -57,7 +57,7 @@ public struct Piece {
 
 extension Piece: CustomDebugStringConvertible {
   
-  public var debugDescription: String {
+  var debugDescription: String {
     "\(start) \(finish) \(type)"
   }
   
@@ -65,7 +65,7 @@ extension Piece: CustomDebugStringConvertible {
 
 extension Piece: Equatable {
   
-  public static func ==(lhs: Piece, rhs: Piece) -> Bool {
+  static func ==(lhs: Piece, rhs: Piece) -> Bool {
     return lhs.start == rhs.start && lhs.finish == rhs.finish && lhs.type == rhs.type
   }
   
@@ -73,7 +73,7 @@ extension Piece: Equatable {
 
 // MARK: Segment Slicer
 
-class SegmentSlicer {
+internal class SegmentSlicer {
   
   /**
    We can assume sorted data
