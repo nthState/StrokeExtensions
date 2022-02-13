@@ -1,21 +1,20 @@
 @Tutorial() {
-  @Intro(title: "Getting Started with MaskedBlur in SwiftUI") {
-    In this tutorial, I'll show you how to integrate PathWarp
-    into your SwiftUI project to warp some shapes!
+  @Intro(title: "Getting Started with Stroke Extensions in SwiftUI") {
+    In this tutorial, I'll show you how to integrate Stroke Extension
+    into your SwiftUI project to add some ornaments on a shape
     
     @Image(source: file, alt: "accessible description")
   }
   
-  @Section(title: "Warping a Rectangle") {
+  @Section(title: "Adding Views around a Circle") {
     @ContentAndMedia {
-      Let's get started with a Rectangle
+      Let's get started with adding ornaments on a Circle
       
-      @Image(source: file, alt: "accessible description")
     }
     
     @Steps {
       @Step {
-        Start of with a simple view, this one displays a Rectangle with a red border
+        Let's add a Circle to your View
         
         @Code(name: "Stroke.swift", file: "01_Stroke.swift") {
           @Image(source: "01_Stroke.png", alt: "accessible description")
@@ -23,13 +22,41 @@
       }
       
       @Step {
-        Import the ``PathWarp`` Swift Package
+        Import the ``StrokeExtensions`` Swift Package
         
         @Code(name: "Stroke.swift", file: "02_Stroke.swift") {
-          @Image(source: "02_Stroke.png", alt: "accessible description")
+          
+        }
+      }
+      
+      @Step {
+        Add the `stroke` modifier, for the moment, copy what we have here and I'll explain how it works.
+        
+        We'll return a new Circle for each point on the shape
+        
+        @Code(name: "Stroke.swift", file: "03_Stroke.swift") {
+          @Image(source: "03_Stroke.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Using the `layout` parameter we can get the position of the view on the shape, it's position is in the range 0 to 1,
+        so we need to scale it up based on the size of the view
+        
+        @Code(name: "Stroke.swift", file: "04_Stroke.swift") {
+          
         }
       }
 
+      @Step {
+        We can then pass the position to the view
+        
+        @Code(name: "Stroke.swift", file: "05_Stroke.swift") {
+          @Image(source: "05_Stroke.png", alt: "accessible description")
+        }
+      }
+
+      
     }
   }
 }

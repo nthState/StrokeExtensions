@@ -14,52 +14,52 @@ final class SegmentSlicerTests: XCTestCase {
 
   func testSegmentAndShapesSlice() throws {
 
-    let segments = [Piece(0, 1, .space), Piece(1, 2, .space)]
+    let segments = [Segment(pieces: [], length: 1), Segment(pieces: [], length: 1)]
     let shapes = [Piece(0.4, .shape), Piece(1.4, .shape)]
 
     let actual: [Segment] = SegmentSlicer.slice(segments, shapes)
 
-    let expected: [Segment] = [Segment(pieces: [Piece(0, 0.4, .space), Piece(0.4, .shape), Piece(0.4, 1, .space)]),
-                               Segment(pieces: [Piece(1, 1.4, .space), Piece(1.4, .shape), Piece(1.4, 2, .space)])]
+    let expected: [Segment] = [Segment(pieces: [Piece(0.4, .shape)], length: 1),
+                               Segment(pieces: [Piece(0.3999999999999999, .shape)], length: 1)]
 
     XCTAssertEqual(actual, expected, "Should match")
   }
 
   func testSegmentAndShapesSliceAtStart() throws {
     
-    let segments = [Piece(0, 1, .space), Piece(1, 2, .space)]
+    let segments = [Segment(pieces: [], length: 1), Segment(pieces: [], length: 1)]
     let shapes = [Piece(0, .shape)]
     
     let actual: [Segment] = SegmentSlicer.slice(segments, shapes)
     
-    let expected: [Segment] = [Segment(pieces: [Piece(0, .shape), Piece(0, 1, .space)]),
-                               Segment(pieces: [Piece(1, 2, .space)])]
+    let expected: [Segment] = [Segment(pieces: [Piece(0, .shape)], length: 1),
+                               Segment(pieces: [], length: 1)]
     
     XCTAssertEqual(actual, expected, "Should match")
   }
   
   func testSegmentAndShapesSliceAtEnd() throws {
 
-    let segments = [Piece(0, 1, .space), Piece(1, 2, .space)]
+    let segments = [Segment(pieces: [], length: 1), Segment(pieces: [], length: 1)]
     let shapes = [Piece(1, .shape)]
 
     let actual: [Segment] = SegmentSlicer.slice(segments, shapes)
 
-    let expected: [Segment] = [Segment(pieces: [Piece(0, 1, .space), Piece(1, .shape)]),
-                               Segment(pieces: [Piece(1, 2, .space)])]
+    let expected: [Segment] = [Segment(pieces: [Piece(1, .shape)], length: 1),
+                               Segment(pieces: [], length: 1)]
 
     XCTAssertEqual(actual, expected, "Should match")
   }
   
   func testSegmentAndShapesSliceEbd() throws {
 
-    let segments = [Piece(0, 1, .space), Piece(1, 2, .space)]
+    let segments = [Segment(pieces: [], length: 1), Segment(pieces: [], length: 1)]
     let shapes = [Piece(0, .shape), Piece(0.4, .shape), Piece(1.4, .shape)]
 
     let actual: [Segment] = SegmentSlicer.slice(segments, shapes)
 
-    let expected: [Segment] = [Segment(pieces: [Piece(0, .shape), Piece(0, 0.4, .space), Piece(0.4, .shape), Piece(0.4, 1, .space)]),
-                               Segment(pieces: [Piece(1, 1.4, .space), Piece(1.4, .shape),Piece(1.4, 2, .space)])]
+    let expected: [Segment] = [Segment(pieces: [Piece(0, .shape), Piece(0.4, .shape)], length: 1),
+                               Segment(pieces: [Piece(0.3999999999999999, .shape)], length: 2)]
 
     XCTAssertEqual(actual, expected, "Should match")
   }

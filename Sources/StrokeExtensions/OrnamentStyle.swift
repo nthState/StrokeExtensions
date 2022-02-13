@@ -51,7 +51,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
   
   public func body(content: Content) -> some View {
     
-    let items = buildAubViews(content: content)
+    let items = buildSubViews(content: content)
 
     ZStack {
       ForEach(items, id: \.id) { ornamentView in
@@ -68,7 +68,7 @@ public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Sh
     innerContent(index, LayoutData(position: point, angle: angle, leftNormal: leftNormal))
   }
   
-  func buildAubViews(content: Content) -> [ViewItem] {
+  func buildSubViews(content: Content) -> [ViewItem] {
     
     var views: [ViewItem] = []
     

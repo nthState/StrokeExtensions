@@ -27,6 +27,7 @@ internal class PathTraversal<S> where S: Shape {
   private let divisionByZeroMin: CGFloat = 0.0001
   
   private let _totalLength: CGFloat
+  private let _allLengths: [CGFloat]
   private let _totalSegments: UInt
   
   private var _startDistance: CGFloat = 0
@@ -53,21 +54,30 @@ internal class PathTraversal<S> where S: Shape {
     self.accuracy = accuracy
     self.itemCount = itemCount
     
-    (self._totalLength, self._totalSegments) = self.path.totalLengthAndSegments()
+    (self._totalLength, self._totalSegments, self._allLengths) = self.path.totalLengthAndSegments()
     
+    let chris = (self._totalLength) / CGFloat(self.itemCount)
     
     // Create an array of segments that we'll insert the shapes into
-    let pathSegments = (Int(0)..<Int(self._totalSegments)).compactMap({ index in
-      return Piece(CGFloat(index), CGFloat(index) + 1, .space)
+//    let pathSegments = (Int(0)..<Int(self._totalSegments)).compactMap({ index in
+//      return Piece(CGFloat(index), CGFloat(index) + 1, .space)
+//    })\
+    let segmentContainers = (Int(0)..<Int(self._totalSegments)).compactMap({ index in
+      return Segment(pieces: [], length: self._allLengths[index])
     })
+    #warning("Chris fix this, length issues")
+//    var pathSegments: [Piece] = []
+//    for position in stride(from: 0, to: CGFloat(self._totalLength), by: chris) {
+//      pathSegments.append(Piece(position, position + chris, .space))
+//    }
     
     self._startDistance = self._totalLength * from
     
     switch direction {
     case .forward:
-      self._segments = forward(pathSegments: pathSegments)
+      self._segments = forward(containers: segmentContainers)
     case .backward:
-      self._segments = backward(pathSegments: pathSegments)
+      self._segments = backward(containers: segmentContainers)
     }
 
   }
@@ -78,7 +88,7 @@ internal class PathTraversal<S> where S: Shape {
 
 extension PathTraversal {
   
-  private func forward(pathSegments: [Piece]) -> [Segment] {
+  private func forward(containers: [Segment]) -> [Segment] {
     
     var shapes: [Piece] = []
     
@@ -105,11 +115,11 @@ extension PathTraversal {
       
     }
     
-    return SegmentSlicer.slice(pathSegments, shapes)
+    return SegmentSlicer.slice(containers, shapes)
     
   }
 
-  private func backward(pathSegments: [Piece]) -> [Segment] {
+  private func backward(containers: [Segment]) -> [Segment] {
     
     var shapes: [Piece] = []
     
@@ -132,7 +142,7 @@ extension PathTraversal {
       
     }
 
-    return SegmentSlicer.slice(pathSegments, shapes)
+    return SegmentSlicer.slice(containers, shapes)
     
   }
 
@@ -170,9 +180,13 @@ extension PathTraversal {
         startPoint = point
         lastPoint = point
         
-        callback(.move(to: point), Item(lastPoint: lastPoint, newPoint: point, angle: .zero, leftNormal: .zero, index: index))
+        callback(element, Item(lastPoint: lastPoint, newPoint: point, angle: .zero, leftNormal: .zero, index: index))
 
       case .line(to: let point):
+        
+        guard self._segments.indices.contains(segmentCounter) else {
+          return
+        }
 
         let segment = self._segments[segmentCounter]
         
@@ -183,7 +197,7 @@ extension PathTraversal {
             continue
           }
           
-          let e = piece.start - CGFloat(segmentCounter)
+          let e = piece.start// - CGFloat(segmentCounter)
           
           let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(point), t: Float(e))
 
@@ -193,13 +207,13 @@ extension PathTraversal {
 
           
 
-          guard viewIndex < itemCount else {
-            return
-          }
+//          guard viewIndex < itemCount else {
+//            return
+//          }
           
           let leftNormal = (newCGPoint.cgPoint - tempLast).normalize().rotateLeft() * 10
 
-          callback(.line(to: point), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
+          callback(element, Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
           viewIndex += 1
           tempLast = newCGPoint.cgPoint
@@ -208,6 +222,10 @@ extension PathTraversal {
         lastPoint = point
         segmentCounter += 1
       case .curve(to: let point, control1: let control1, control2: let control2):
+        
+        guard self._segments.indices.contains(segmentCounter) else {
+          return
+        }
         
         let arcLengths = Bezier.bezier_arcLengths(start: lastPoint, p1: control1, p2: control2, finish: point, accuracy: self.accuracy)
 
@@ -219,8 +237,10 @@ extension PathTraversal {
           guard piece.type == .shape else {
             continue
           }
+#warning("piece.start is 0.77, but that is 1 for the first line segment")
           
-          let e = Bezier.bezier_evenlyDistributed(u: piece.start - CGFloat(segmentCounter), arcLengths: arcLengths)
+          //let p = (piece.start / segment.length) //- CGFloat(segmentCounter)
+          let e = Bezier.bezier_evenlyDistributed(u: piece.start, arcLengths: arcLengths)
           
           let x = Bezier.bezier_point_x(t: e, a: lastPoint, b: control1, c: control2, d: point)
           let y = Bezier.bezier_point_y(t: e, a: lastPoint, b: control1, c: control2, d: point)
@@ -229,15 +249,13 @@ extension PathTraversal {
 
           let newPoint = CGPoint(x: x, y: y) //* size
 
-          
-
-          guard viewIndex < itemCount else {
-            return
-          }
+//          guard viewIndex < itemCount else {
+//            return
+//          }
           
           let leftNormal = (newPoint - tempLast).normalize().rotateLeft() * 10
 
-          callback(.curve(to: point, control1: control1, control2: control2), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
+          callback(element, Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
           viewIndex += 1
           tempLast = CGPoint(x: x, y: y)
@@ -246,6 +264,10 @@ extension PathTraversal {
         lastPoint = point
         segmentCounter += 1
       case .quadCurve(to: let point, control: let control):
+        
+        guard self._segments.indices.contains(segmentCounter) else {
+          return
+        }
 
         let arcLengths = Bezier.bezier_arcLengths(start: lastPoint, p1: control, p2: control, finish: point, accuracy: self.accuracy)
 
@@ -258,7 +280,7 @@ extension PathTraversal {
             continue
           }
           
-          let e = Bezier.bezier_evenlyDistributed(u: piece.start - CGFloat(segmentCounter), arcLengths: arcLengths)
+          let e = Bezier.bezier_evenlyDistributed(u: piece.start, arcLengths: arcLengths)
           
           let x = Bezier.bezier_point_x(t: e, a: lastPoint, b: control, c: control, d: point)
           let y = Bezier.bezier_point_y(t: e, a: lastPoint, b: control, c: control, d: point)
@@ -269,13 +291,13 @@ extension PathTraversal {
 
           
 
-          guard viewIndex < itemCount else {
-            return
-          }
+//          guard viewIndex < itemCount else {
+//            return
+//          }
           
           let leftNormal = (newPoint - tempLast).normalize().rotateLeft() * 10
 
-          callback(.quadCurve(to: point, control: control), Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
+          callback(element, Item(lastPoint: tempLast, newPoint: newPoint, angle: Angle(degrees: angleInDegrees), leftNormal: leftNormal, index: viewIndex))
           index += 1
           viewIndex += 1
           tempLast = CGPoint(x: x, y: y)
@@ -284,6 +306,10 @@ extension PathTraversal {
         lastPoint = point
         segmentCounter += 1
       case .closeSubpath:
+        
+        guard self._segments.indices.contains(segmentCounter) else {
+          return
+        }
         
         let segment = self._segments[segmentCounter]
         
@@ -294,7 +320,7 @@ extension PathTraversal {
             continue
           }
           
-          let e = piece.start - CGFloat(segmentCounter)
+          let e = piece.start// - CGFloat(segmentCounter)
           
           let newCGPoint = mix(SIMD2<Float>(lastPoint), SIMD2<Float>(startPoint), t: Float(e))
 
@@ -304,9 +330,9 @@ extension PathTraversal {
 
           
 
-          guard viewIndex < itemCount else {
-            return
-          }
+//          guard viewIndex < itemCount else {
+//            return
+//          }
           
           let leftNormal = (newPoint - tempLast).normalize().rotateLeft() * 10
 

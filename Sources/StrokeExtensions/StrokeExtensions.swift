@@ -94,7 +94,7 @@ public enum Distribution {
   case continuous
 }
 
-extension Distribution {
+public extension Distribution {
   
   var description: String {
     switch self {
@@ -117,7 +117,7 @@ public enum Direction {
   case backward
 }
 
-extension Direction {
+public extension Direction {
   
   var description: String {
     switch self {

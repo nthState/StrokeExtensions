@@ -1,4 +1,5 @@
 import SwiftUI
+import StrokeExtensions
 
 struct ExampleSwiftUIView {}
 
