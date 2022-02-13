@@ -182,8 +182,8 @@ internal class SegmentSlicer {
             add(piece: Piece(p, p, .shape))
             
             //currentMin = toMerge[j].start
-            mergeCounter += 1
           }
+          mergeCounter += 1
         } else {
           
           //add(piece: Piece(currentMin, base[i].length, .space))

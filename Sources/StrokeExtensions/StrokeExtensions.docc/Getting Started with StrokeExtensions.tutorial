@@ -56,6 +56,14 @@
         }
       }
 
+      @Step {
+        Adjust the itemCount to five to see the view view change
+        
+        @Code(name: "Stroke.swift", file: "06_Stroke.swift") {
+          @Image(source: "06_Stroke.png", alt: "accessible description")
+        }
+      }
+
       
     }
   }
