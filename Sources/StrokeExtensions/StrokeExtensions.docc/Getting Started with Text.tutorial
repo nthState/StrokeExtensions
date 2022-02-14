@@ -1,29 +1,56 @@
-@Tutorial(time: <#number#>) {
-    @Intro(title: "<#text#>") {
-        <#text#>
-        
-        @Image(source: <#file#>, alt: "<#accessible description#>")
+@Tutorial() {
+  @Intro(title: "Getting Started with Mixed Content") {
+    In this tutorial, I'll show you how to integrate Stroke Extension
+    into your SwiftUI project to add some ornaments on a shape
+    
+    @Image(source: file, alt: "accessible description")
+  }
+  
+  @Section(title: "Adding Views around a Circle") {
+    @ContentAndMedia {
+      Let's get started with adding ornaments on a Circle
+      
     }
     
-    @Section(title: "<#text#>") {
-        @ContentAndMedia {
-            <#text#>
-            
-            @Image(source: <#file#>, alt: "<#accessible description#>")
-        }
+    @Steps {
+      
+      @Step {
+        Lets start with a new View, Draw 12 circles around a Rectangle
         
-        @Steps {
-            @Step {
-                <#text#>
-                
-                @Image(source: <#file#>, alt: "<#accessible description#>")
-            }
-            
-            @Step {
-                <#text#>
-                
-                @Code(name: "<#display name#>", file: <#filename.swift#>)
-            }
+        @Code(name: "Stroke.swift", file: "01_Text.swift") {
+          @Image(source: "01_Text.png", alt: "accessible description")
         }
+      }
+      
+      @Step {
+        We need a helper function which:
+        
+        Given an index and string, returns a Character (if available)
+        
+        @Code(name: "Stroke.swift", file: "02_Text.swift") {
+          
+        }
+      }
+      
+      @Step {
+        Now, Instead of drawing a Circle at each point, we're going to draw a single
+        character from the string
+        
+        @Code(name: "Stroke.swift", file: "03_Text.swift") {
+          @Image(source: "03_Text.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Using the given `normal` and `angle` we are able to change the direction
+        of the text
+        
+        @Code(name: "Stroke.swift", file: "04_Text.swift") {
+          @Image(source: "04_Text.png", alt: "accessible description")
+        }
+      }
+
+      
     }
+  }
 }

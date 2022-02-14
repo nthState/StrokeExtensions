@@ -1,29 +1,49 @@
-@Tutorial(time: <#number#>) {
-    @Intro(title: "<#text#>") {
-        <#text#>
-        
-        @Image(source: <#file#>, alt: "<#accessible description#>")
+@Tutorial() {
+  @Intro(title: "Getting Started with Mixed Content") {
+    In this tutorial, I'll show you how to integrate Stroke Extension
+    into your SwiftUI project to add some ornaments on a shape
+    
+    @Image(source: file, alt: "accessible description")
+  }
+  
+  @Section(title: "Adding Views around a Circle") {
+    @ContentAndMedia {
+      Let's get started with adding ornaments on a Circle
+      
     }
     
-    @Section(title: "<#text#>") {
-        @ContentAndMedia {
-            <#text#>
-            
-            @Image(source: <#file#>, alt: "<#accessible description#>")
-        }
+    @Steps {
+      
+      @Step {
+        Lets start with a View that we have already, it draws five circles around a larger circle
         
-        @Steps {
-            @Step {
-                <#text#>
-                
-                @Image(source: <#file#>, alt: "<#accessible description#>")
-            }
-            
-            @Step {
-                <#text#>
-                
-                @Code(name: "<#display name#>", file: <#filename.swift#>)
-            }
+        @Code(name: "Stroke.swift", file: "01_Mixed.swift") {
+          @Image(source: "01_Mixed.png", alt: "accessible description")
         }
+      }
+      
+      
+      @Step {
+        We can now make use of the first parameter passed in.
+        
+        This is the index, which counts up for each view, knowing this, we can
+        supply a different view based on index if we wish
+        
+        @Code(name: "Stroke.swift", file: "03_Mixed.swift") {
+          
+        }
+      }
+      
+      @Step {
+        Set a condition to check if the index is an even number, and display a
+        different view if it is
+        
+        @Code(name: "Stroke.swift", file: "03_Mixed.swift") {
+          @Image(source: "03_Mixed.png", alt: "accessible description")
+        }
+      }
+
+      
     }
+  }
 }

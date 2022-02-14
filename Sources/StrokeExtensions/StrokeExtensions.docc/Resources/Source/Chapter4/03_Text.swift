@@ -1,13 +1,7 @@
-//
-//  SwiftUIView.swift
-//  
-//
-//  Created by Chris Davis on 12/02/2022.
-//
-
 import SwiftUI
+import StrokeExtensions
 
-struct SwiftUIView {
+struct ExampleSwiftUIView {
   
   func getCharacter(_ str: String, at index: Int) -> String? {
     guard str.count > 0 && index < str.count else { return nil }
@@ -16,7 +10,7 @@ struct SwiftUIView {
   
 }
 
-extension SwiftUIView: View {
+extension ExampleSwiftUIView: View {
   
   var body: some View {
     content
@@ -24,17 +18,13 @@ extension SwiftUIView: View {
   
   var content: some View {
     Rectangle()
-      .stroke(itemCount: 10) { index, layout in
+      .stroke(itemCount: 12) { index, layout in
         
         let scaled = layout.position * CGSize(width: 100, height: 100)
         
         if let character = getCharacter("Hello, World", at: Int(index)) {
           
           Text(character)
-            .scaleEffect(x: (layout.leftNormal.y < 0 ? -1 : 1),
-                         y: (layout.leftNormal.y < 0 ? -1 : 1),
-                         anchor: UnitPoint.center)
-            .rotationEffect(layout.angle)
             .position(x: scaled.x, y: scaled.y)
           
         } else {
@@ -46,13 +36,4 @@ extension SwiftUIView: View {
       .frame(width: 100, height: 100)
   }
   
-  
-  
-}
-
-
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        SwiftUIView()
-    }
 }
