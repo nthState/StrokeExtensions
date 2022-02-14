@@ -10,6 +10,12 @@
         @TutorialReference(tutorial: "doc:Getting-Started-with-StrokeExtensions")
     }
     
+    @Chapter(name: "Getting Started with Spacing") {
+        Use different modes to spread your content
+
+        @TutorialReference(tutorial: "doc:Getting-Started-with-Spacing")
+    }
+    
     @Chapter(name: "Getting Started with Mixed Content") {
         Use the parameters passed to the ViewBuilder to control your Content
 

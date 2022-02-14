@@ -1,0 +1,54 @@
+@Tutorial() {
+  @Intro(title: "Getting Started with Spacing") {
+    In this tutorial, I'll show you how to integrate Stroke Extension
+    into your SwiftUI project to add some ornaments on a shape
+    
+    @Image(source: file, alt: "accessible description")
+  }
+  
+  @Section(title: "Adding Views around a Circle") {
+    @ContentAndMedia {
+      Let's get started with adding ornaments on a Circle
+      
+    }
+    
+    @Steps {
+      
+      @Step {
+        Lets start with a View that has been stroked equally
+        
+        @Code(name: "Stroke.swift", file: "01_Spacing.swift") {
+          @Image(source: "01_Spacing.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Change the distribution type to continuous
+        
+        All content sits above the other, this is because we have not specified any spacing
+        
+        @Code(name: "Stroke.swift", file: "02_Spacing.swift") {
+          @Image(source: "02_Spacing.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Specify some spacing
+        
+        @Code(name: "Stroke.swift", file: "03_Spacing.swift") {
+          @Image(source: "03_Spacing.png", alt: "accessible description")
+        }
+      }
+      
+      @Step {
+        Apply an offset to the starting position
+        
+        @Code(name: "Stroke.swift", file: "04_Spacing.swift") {
+          @Image(source: "04_Spacing.png", alt: "accessible description")
+        }
+      }
+
+      
+    }
+  }
+}

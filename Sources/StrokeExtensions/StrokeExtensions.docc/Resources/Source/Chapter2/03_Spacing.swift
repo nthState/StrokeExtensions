@@ -1,15 +1,9 @@
-//
-//  SwiftUIView.swift
-//  
-//
-//  Created by Chris Davis on 12/02/2022.
-//
-
 import SwiftUI
+import StrokeExtensions
 
-struct SwiftUIView {}
+struct ExampleSwiftUIView {}
 
-extension SwiftUIView: View {
+extension ExampleSwiftUIView: View {
   
   var body: some View {
     content
@@ -17,7 +11,7 @@ extension SwiftUIView: View {
   
   var content: some View {
     Circle()
-      .stroke(itemCount: 5, from: 0.2, spacing: 0.1, distribution: .continuous) { _, layout in
+      .stroke(itemCount: 5, spacing: 0.1, distribution: .continuous) { _, layout in
         
         let scaled = layout.position * CGSize(width: 100, height: 100)
         
@@ -32,13 +26,4 @@ extension SwiftUIView: View {
       .frame(width: 100, height: 100)
   }
   
-  
-  
-}
-
-
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        SwiftUIView()
-    }
 }

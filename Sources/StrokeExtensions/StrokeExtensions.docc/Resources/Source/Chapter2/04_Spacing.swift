@@ -1,15 +1,9 @@
-//
-//  SwiftUIView.swift
-//  
-//
-//  Created by Chris Davis on 12/02/2022.
-//
-
 import SwiftUI
+import StrokeExtensions
 
-struct SwiftUIView {}
+struct ExampleSwiftUIView {}
 
-extension SwiftUIView: View {
+extension ExampleSwiftUIView: View {
   
   var body: some View {
     content
@@ -32,13 +26,4 @@ extension SwiftUIView: View {
       .frame(width: 100, height: 100)
   }
   
-  
-  
-}
-
-
-struct SwiftUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        SwiftUIView()
-    }
 }
