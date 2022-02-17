@@ -159,42 +159,24 @@ internal class SegmentSlicer {
     var pieces: [Piece] = []
     var segments: [Segment] = []
     
-#warning("fix lower / higher to give percentage")
-    
     var incrementingMax: CGFloat = 0
     
     for i in 0..<baseLength {
       
-      var currentMin: CGFloat = incrementingMax
+      let currentMin: CGFloat = incrementingMax
       incrementingMax += base[i].length
       let currentMax = incrementingMax
-      //var currentMin: CGFloat = base[i].start
       
       for j in mergeCounter..<toMergeCount {
         
         if toMerge[j].finish <= currentMax {
           
-          //add(piece: Piece(currentMin, toMerge[j].start, .space))
-          //add(piece: toMerge[j])
-          //let p = toMerge[j].start / (currentMax)
           if toMerge[j].type == .shape {
             let p = (toMerge[j].start - currentMin) / (currentMax - currentMin)
             add(piece: Piece(p, p, .shape))
-            
-            //currentMin = toMerge[j].start
           }
           mergeCounter += 1
-        } else {
-          
-          //add(piece: Piece(currentMin, base[i].length, .space))
-          
-          break
         }
-        
-      }
-      
-      if currentMin < currentMax {
-        //add(piece: Piece(currentMin, currentMax, .space))
       }
       
       segments.append(Segment(pieces: pieces, length: currentMax))

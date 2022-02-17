@@ -9,6 +9,10 @@ This is a pure SwiftUI extension to add views along curves
 
 ![Text on curve SwiftUI](Docs/images/text_on_curve.gif)
 
+| Before | After |
+|--------|-------|
+![Before]()|![After]()
+
 
 ```
 import StrokeExtensions
