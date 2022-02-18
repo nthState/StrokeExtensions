@@ -4,7 +4,7 @@
 //
 //  Copyright © 2022 Chris Davis, https://www.nthState.com
 //
-//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
+//  See https://github.com/nthState/StrokeExtensions/blob/main/LICENSE for license information.
 //
 
 import SwiftUI
@@ -16,6 +16,8 @@ struct CurveSwiftUIView {
   @State var spacing: CGFloat = 0.1
   @State var distribution: Distribution = .continuous
   @State var direction: Direction = .forward
+  @State var useXNormal: Bool = true
+  @State var useYNormal: Bool = true
   
   var intProxy: Binding<Double>{
     Binding<Double>(get: {
@@ -32,7 +34,14 @@ extension CurveSwiftUIView: View {
     VStack {
       Text("Single Curve Example")
       curve
-      controls
+      ControllerView(isAnimating: $isAnimating,
+                     numberOfOrnaments: intProxy,
+                     offset: $offset,
+                     spacing: $spacing,
+                     distribution: $distribution,
+                     direction: $direction,
+                     useXNormal: $useXNormal,
+                     useYNormal: $useYNormal)
     }
   }
   
@@ -71,64 +80,6 @@ extension CurveSwiftUIView: View {
       
     }
     .background(Color.yellow)
-  }
-  
-  var controls: some View {
-    VStack {
-      
-      HStack {
-        Text("Ornaments")
-          .frame(width: 100, alignment: .leading)
-        Slider(value: intProxy, in: 0...30.0)
-        TextField("", value: $numberOfOrnaments, formatter: NumberFormatter())
-      }
-      
-      HStack {
-        Text("From")
-          .frame(width: 100, alignment: .leading)
-        Slider(value: $offset, in: 0...1)
-        TextField("", value: $offset, formatter: NumberFormatter())
-      }
-      
-      HStack {
-        Text("Spacing")
-          .frame(width: 100, alignment: .leading)
-        Slider(value: $spacing, in: 0...1)
-        TextField("", value: $spacing, formatter: NumberFormatter())
-      }
-      
-      HStack {
-        Button {
-          switch distribution {
-          case .continuous:
-            distribution = .evenly
-          case .evenly:
-            distribution = .continuous
-          }
-        } label: {
-          Text("Distribution: \(distribution.description)")
-        }
-        .padding()
-        .background(Color.green)
-        
-        Button {
-          switch direction {
-          case .forward:
-            direction = .backward
-          case .backward:
-            direction = .forward
-          }
-        } label: {
-          Text("Direction: \(direction.description)")
-        }
-        .padding()
-        .background(Color.green)
-        
-      }
-    }
-    .padding()
-    .background(Color.blue.opacity(0.1))
-    .cornerRadius(50)
   }
   
 }

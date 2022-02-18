@@ -1,8 +1,10 @@
 //
 //  SwiftUIView.swift
-//  
+//  StrokeExtensions
 //
-//  Created by Chris Davis on 12/02/2022.
+//  Copyright © 2022 Chris Davis, https://www.nthState.com
+//
+//  See https://github.com/nthState/StrokeExtensions/blob/main/LICENSE for license information.
 //
 
 import SwiftUI

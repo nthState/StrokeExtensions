@@ -4,7 +4,7 @@
 //
 //  Copyright © 2022 Chris Davis, https://www.nthState.com
 //
-//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
+//  See https://github.com/nthState/StrokeExtensions/blob/main/LICENSE for license information.
 //
 
 import SwiftUI
@@ -21,6 +21,9 @@ internal struct ViewItem: Identifiable {
   }
 }
 
+/**
+Style used for decorating a View with other Views
+ */
 public struct OrnamentStyle<S, NewContent>: ViewModifier, ShapeStyle where S: Shape, NewContent: View {
   
   private let path: Path

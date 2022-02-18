@@ -4,7 +4,7 @@
 //
 //  Copyright © 2022 Chris Davis, https://www.nthState.com
 //
-//  See https://github.com/nthState/StrokeExtensions/blob/master/LICENSE for license information.
+//  See https://github.com/nthState/StrokeExtensions/blob/main/LICENSE for license information.
 //
 import Foundation
 import CoreGraphics
@@ -76,67 +76,6 @@ extension Piece: Equatable {
 // MARK: Segment Slicer
 
 internal class SegmentSlicer {
-  
-  /**
-   We can assume sorted data
-   */
-  //  class func slice(_ base: [Piece], _ toMerge: [Piece]) -> [Segment] {
-  //
-  //    func add(piece: Piece) {
-  //
-  //      if pieces.isEmpty && piece.isEmptySpace {
-  //        return
-  //      }
-  //
-  //      if pieces.last != piece {
-  //        pieces.append(piece)
-  //      }
-  //    }
-  //
-  //    let baseLength = base.count
-  //    let toMergeCount = toMerge.count
-  //
-  //    var mergeCounter: Int = 0
-  //
-  //    var pieces: [Piece] = []
-  //    var segments: [Segment] = []
-  //
-  //    #warning("fix lower / higher to give percentage")
-  //
-  //    // Algorithm goes here
-  //    for i in 0..<baseLength {
-  //
-  //      let currentMax = base[i].finish
-  //      var currentMin: CGFloat = base[i].start
-  //
-  //      for j in mergeCounter..<toMergeCount {
-  //
-  //        if toMerge[j].finish <= currentMax {
-  //
-  //          add(piece: Piece(currentMin, toMerge[j].start, .space))
-  //          add(piece: toMerge[j])
-  //
-  //          currentMin = toMerge[j].start
-  //          mergeCounter += 1
-  //        } else {
-  //
-  //          add(piece: Piece(currentMin, base[i].finish, .space))
-  //
-  //          break
-  //        }
-  //
-  //      }
-  //
-  //      if currentMin < currentMax {
-  //        add(piece: Piece(currentMin, currentMax, .space))
-  //      }
-  //
-  //      segments.append(Segment(pieces: pieces, length: currentMax))
-  //      pieces = []
-  //    }
-  //
-  //    return segments
-  //  }
   
   class func slice(_ base: [Segment], _ toMerge: [Piece]) -> [Segment] {
     
