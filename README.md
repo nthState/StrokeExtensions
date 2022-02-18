@@ -2,7 +2,16 @@
 
 Adorn your SwiftUI Shapes/Beziers with Ornaments
 
-This is a pure SwiftUI extension to add views along curves
+This is a pure SwiftUI extension to add views along curves.
+
+## Features
+
+- [x] Fast Implementation
+- [x] Customizable Item Count
+- [x] AnyView can be used
+- [x] Custom offset position
+- [x] Equal Spreading or Specified Spaced items
+- [x] Fully Animatable
 
 
 |        |       |
