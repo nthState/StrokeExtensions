@@ -4,14 +4,11 @@ Adorn your SwiftUI Shapes/Beziers with Ornaments
 
 This is a pure SwiftUI extension to add views along curves
 
-![Bunting SwiftUI](Docs/images/bunting.gif)
 
-
-![Text on curve SwiftUI](Docs/images/text_on_curve.gif)
-
-| Before | After |
+|        |       |
 |--------|-------|
-![Before]()|![After]()
+![Extension](Sources/StrokeExtensions/StrokeExtensions.docc/Resources/Images/Chapter1/06_Stroke.png)|![Extension](Sources/StrokeExtensions/StrokeExtensions.docc/Resources/Images/Chapter2/04_Spacing.png)
+![Extension](Sources/StrokeExtensions/StrokeExtensions.docc/Resources/Images/Chapter3/03_Mixed.png)|![Extension](Sources/StrokeExtensions/StrokeExtensions.docc/Resources/Images/Chapter4/04_Text.png)
 
 
 ```
