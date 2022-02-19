@@ -1,4 +1,4 @@
-@Tutorials(name: "aa") {
+@Tutorials(name: "Chris") {
     @Intro(title: "Working with StrokeExtensions") {
         A collection of Getting Started Guides working with Stroke Extensions for SwiftUI.
         
