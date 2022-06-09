@@ -1,14 +1,13 @@
 @Tutorial() {
-  @Intro(title: "Getting Started with Mixed Content") {
-    In this tutorial, I'll show you how to integrate Stroke Extension
-    into your SwiftUI project to add some ornaments on a shape
+  @Intro(title: "Getting Started with Text") {
+    In this tutorial, I'll show you how to use Text with Stroke Extensions
     
     @Image(source: file, alt: "accessible description")
   }
   
-  @Section(title: "Adding Views around a Circle") {
+  @Section(title: "Adding Text around a Square") {
     @ContentAndMedia {
-      Let's get started with adding ornaments on a Circle
+      Let's get started ...
       
     }
     

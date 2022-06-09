@@ -109,6 +109,31 @@ public extension Shape {
 }
 ```
 
-TODO
+## TODO
 
 - backward has wrong shape on step
+
+
+
+## Documentation
+
+Documentation website here: https://nthstate.github.io/StrokeExtensions/documentation/strokeextensions/
+
+Building the docs
+
+```
+swift build
+```
+
+```
+PACKAGE_NAME=StrokeExtensions
+REPOSITORY_NAME=StrokeExtensions
+OUTPUT_PATH=./docs
+
+swift package --allow-writing-to-directory $OUTPUT_PATH \
+    generate-documentation --target $PACKAGE_NAME \
+    --disable-indexing \
+    --transform-for-static-hosting \
+    --hosting-base-path $REPOSITORY_NAME \
+    --output-path $OUTPUT_PATH
+ ```
